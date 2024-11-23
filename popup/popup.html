@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="jp ">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="name"></title>
+  <link rel="stylesheet" href="bootstrap-5.3.0-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body class="container pb-3 p-2 text-light ">
+  <div class="d-flex  py-2 bg-dark mx-1">
+    <img src="../icons/icon.png" class="my-auto mx-2" alt="message clear button" height="28">
+    <h3 class="my-auto fs-3">Twitch 定型チャット</h3>
+  </div>
+
+  <!-- ステータスの表示 -->
+  <div class="d-flex justify-content-between my-2 p-1  mx-1">
+    <label class="my-auto " for="blur-enabled">Twitch 定型チャット をONにする</label>
+    <div class="form-check form-switch form-check-reverse me-3">
+      <input class="form-check-input" type="checkbox" role="switch" id="enabled">
+    </div>
+  </div>
+
+  <!-- メニュータブ -->
+  <ul class="nav nav-underline mb-2 mx-1 bg-dark rounded-top " id="myTab" role="tablist">
+    <li class="nav-item " role="presentation ">
+      <a class="nav-link active p-1 link-light " id="template-tab" data-bs-toggle="tab" href="#template" role="tab"
+        aria-controls="template " aria-selected="true">定型文</a>
+    </li>
+    <li class="nav-item " role="presentation ">
+      <a class="nav-link p-1 link-light " id="settings-tab" data-bs-toggle="tab" href="#settings" role="tab"
+        aria-controls="settings " aria-selected="true">設定</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link p-1 link-light" id="description-tab" data-bs-toggle="tab" href="#description" role="tab"
+        aria-controls="description" aria-selected="false">概要</a>
+    </li>
+    <li class="nav-item " role="presentation">
+      <a class="nav-link p-1 link-light" id="tutorial-tab" data-bs-toggle="tab" href="#tutorial" role="tab"
+        aria-controls="tutorial" aria-selected="false">チュートリアル</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link p-1 link-light" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info"
+        aria-selected="false">情報</a>
+    </li>
+  </ul>
+
+  <div class="tab-content " id="myTabContent">
+    <!-- 定型文 -->
+    <div class="tab-pane fade mt-3 mx-2 show active" id="template" role="tabpanel" style="margin-bottom: 180px;"
+      aria-labelledby="template-tab">
+      <div class="mb-3">
+        <strong class="mb-0 ps-2 pt-1">プレビュー</strong>
+        <div class=" my-2  w-100 d-flex justify-content-between preview-div" id="twitch-template-chat">
+          <button id="left-arrow" type="button" class="btn btn-custom  p-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-caret-left-fill m-1 mx-2" viewBox="0 0 16 16">
+              <path
+                d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+            </svg>
+          </button>
+          <div id="text" class="btn-group  fs-4 d-flex justify-content-between text-nowrap overflow-x-scroll z-0"
+            style="scroll-behavior: smooth;" role="group">
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="おはようございます！">おは</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="こんにちは">こんにちは</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn" data-text="よろしく">よろしく</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="よろしくお願いいたします。">よろしくお願いいたします。</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="すげえええええ">すげえええええ</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn" data-text="まじか">まじか</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn" data-text="く、くる">く、くる</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="きたああああああ">きたああああああ</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="きたああああああ">きたああああああ</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="あああああああああああああああ">あああああああああああああああ</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn" data-text="すごいな">すごいな</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn" data-text="すごすぎ">すごすぎ</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="お疲れ様でしたー">お疲れ様でしたー</button>
+            <button type="button" class="btn btn-custom my-auto px-2 py-3  template-btn"
+              data-text="きたああああああ">きたああああああ</button>
+          </div>
+          <button id="right-arrow" type="button" class="btn btn-custom  p-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-caret-right-fill m-1 mx-2" viewBox="0 0 16 16">
+              <path
+                d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <strong class="ps-2 ">定型文プリセット</strong>
+
+      <div class="d-flex justify-content-between my-2 ">
+        <div class="d-flex justify-content-center">
+
+          <button class="p-1 justify-content-between btn btn-primary btn-sm me-1 " type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square"
+              viewBox="0 0 18 18">
+              <path
+                d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+              <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+            </svg>
+            追加
+          </button>
+
+          <button class="p-1 justify-content-between btn btn-danger btn-sm" type="button" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3"
+              viewBox="0 0 18 18">
+              <path
+                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+            </svg>
+            削除
+          </button>
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content bg-dark">
+                <div class="modal-body ">
+                  セット名: 名前 を削除します。本当によろしいですか？
+                  <div class="d-flex justify-content-end mt-2">
+                    <button type="button" class="btn btn-danger btn-sm me-2 p-1">削除</button>
+                    <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <button class="p-1 me-1 d-flex justify-content-between btn btn-success btn-sm" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy me-1"
+              viewBox="0 0 18 18">
+              <path d="M11 2H9v3h2z" />
+              <path
+                d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z" />
+            </svg>
+            保存
+          </button>
+        </div>
+      </div>
+
+      <div class=" mx-0 ">
+
+        <ul class="nav nav-tabs " id="myTab" role="tablist">
+          <li class="nav-item " role="presentation">
+            <button type="button" class="nav-link active nav-custom rounded-0 px-2 py-1" id="v-pills-template-tab"
+              data-bs-toggle="pill" data-bs-target="#v-pills-template" role="tab" aria-controls="v-pills-template"
+              aria-selected="false">template
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 px-2 py-1" id="v-pills-messages-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-messages" role="tab" aria-controls="v-pills-messages"
+              aria-selected="false">hanjoudesu
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 px-2 py-1" id=" v-pills-settings-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+              aria-selected="false">indegnasen0706
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 px-2 py-1" id="v-pills-messages-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-messages" role="tab" aria-controls="v-pills-messages"
+              aria-selected="false">yuyuta0702
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 px-2 py-1" id=" v-pills-settings-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+              aria-selected="false">anvis0721
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 px-2 py-1" id=" v-pills-settings-tab" data-bs-toggle="pill"
+              data-bs-target="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+              aria-selected="false">yoshinama222
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content p-0 template-div pb-4" id="v-pills-tabContent">
+
+          <div class="tab-pane fade show active " id="v-pills-template" role="tabpanel"
+            aria-labelledby="v-pills-template-tab" tabindex="0">
+            <div class="d-flex justify-content-between px-2 py-3">
+              <div class="input-group rounded-top  w-100 ">
+                <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark"
+                  id="basic-addon1">twitch.tv/</span>
+                <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
+                  aria-describedby="basic-addon1">
+              </div>
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
+                data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-info-circle-fill " viewBox="0 0 16 16">
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                </svg>
+                <div class="ps-1 text-nowrap">詳細</div>
+              </button>
+            </div>
+            <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo">
+              <div class="ms-2">作成日: 2024/12/12</div>
+              <div class="ms-2">更新日: 2024/12/12</div>
+              <div class="ms-2">作成数: 12</div>
+              <div class="ms-2">使用回数: 12</div>
+            </div>
+
+            <div class="ms-2 mb-1">
+              <div class="form-check">
+                <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck"
+                  data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
+                  aria-controls="collapseHashtag">
+                <label class="form-check-label " for="allHashCheck">
+                  ハッシュタグをすべて表示する
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipHashtag" data-bs-placement="top" title="プレビューの定型文が短くなります。（10文字以内）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck">
+                <label class="form-check-label " for="allQuickCheck">
+                  クイック送信をすべてONにする
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipQuick" data-bs-placement="top" title="チャットに入力されずにそのまま送信されます。（オレンジ色のテキストになります）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="d-flex mx-2 mb-1">
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 ps-0 pe-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+                定型文追加
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash3"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                </svg>
+                <div class="ps-1">削除</div>
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" data-bs-toggle="modal"
+                data-bs-target="#clearModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-x-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+                <div class="ps-1">すべてクリア</div>
+              </button>
+              <div class="modal fade" id="clearModal" tabindex="-1" aria-labelledby="clearModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-dark">
+                    <div class="modal-body ">
+                      現在の定型文の中をすべてクリアします。本当によろしいですか？
+                      <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-danger btn-sm me-2 p-1">すべてクリア</button>
+                        <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+            </div>
+            <hr class="m-2">
+
+            <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+
+            </div>
+            <hr class="m-2">
+          </div>
+          <!-- 2番目 -->
+          <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-template-tab"
+            tabindex="0">
+            <div class="d-flex justify-content-between px-2 py-3">
+              <div class="input-group rounded-top  w-100 ">
+                <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark"
+                  id="basic-addon1">twitch.tv/</span>
+                <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
+                  aria-describedby="basic-addon1">
+              </div>
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
+                data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-info-circle-fill " viewBox="0 0 16 16">
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                </svg>
+                <div class="ps-1 text-nowrap">詳細</div>
+              </button>
+            </div>
+            <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo">
+              <div class="ms-2">作成日: 2024/12/12</div>
+              <div class="ms-2">更新日: 2024/12/12</div>
+              <div class="ms-2">作成数: 12</div>
+              <div class="ms-2">使用回数: 12</div>
+            </div>
+
+            <div class="ms-2 mb-1">
+              <div class="form-check">
+                <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheckBox"
+                  data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
+                  aria-controls="collapseHashtag">
+                <label class="form-check-label " for="flexCheckDefault">
+                  ハッシュタグをすべて表示する
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipHashtag" data-bs-placement="top" title="プレビューの定型文が短くなります。（10文字以内）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickChecked">
+                <label class="form-check-label " for="allQuickChecked">
+                  クイック送信をすべてONにする
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipQuick" data-bs-placement="top" title="チャットに入力されずにそのまま送信されます。（オレンジ色のテキストになります）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="d-flex mb-2">
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+                定型文追加
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash3"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                </svg>
+                <div class="ps-1">削除</div>
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" data-bs-toggle="modal"
+                data-bs-target="#clearModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-x-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+                <div class="ps-1">すべてクリア</div>
+              </button>
+              <div class="modal fade" id="clearModal" tabindex="-1" aria-labelledby="clearModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-dark">
+                    <div class="modal-body ">
+                      現在の定型文の中をすべてクリアします。本当によろしいですか？
+                      <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-danger btn-sm me-2 p-1">すべてクリア</button>
+                        <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mx-2">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+
+            </div>
+            <hr class="m-2">
+
+            <div class="mx-2">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+
+            </div>
+            <hr class="m-2">
+          </div>
+          <!-- 3番目 -->
+          <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-template-tab"
+            tabindex="0">
+            <div class="d-flex justify-content-between px-2 py-3">
+              <div class="input-group rounded-top  w-100 ">
+                <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark"
+                  id="basic-addon1">twitch.tv/</span>
+                <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
+                  aria-describedby="basic-addon1">
+              </div>
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
+                data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-info-circle-fill " viewBox="0 0 16 16">
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                </svg>
+                <div class="ps-1 text-nowrap">詳細</div>
+              </button>
+            </div>
+            <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo">
+              <div class="ms-2">作成日: 2024/12/12</div>
+              <div class="ms-2">更新日: 2024/12/12</div>
+              <div class="ms-2">作成数: 12</div>
+              <div class="ms-2">使用回数: 12</div>
+            </div>
+
+            <div class="ms-2 mb-1">
+              <div class="form-check">
+                <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheckBox"
+                  data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
+                  aria-controls="collapseHashtag">
+                <label class="form-check-label " for="flexCheckDefault">
+                  ハッシュタグをすべて表示する
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipHashtag" data-bs-placement="top" title="プレビューの定型文が短くなります。（10文字以内）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickChecked">
+                <label class="form-check-label " for="allQuickChecked">
+                  クイック送信をすべてONにする
+                </label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  data-bs-toggle="tooltipQuick" data-bs-placement="top" title="チャットに入力されずにそのまま送信されます。（オレンジ色のテキストになります）"
+                  class=" bi bi-question-circle-fill mb-1" viewBox="0 0 16 16">
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="d-flex mb-2">
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+                定型文追加
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash3"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                </svg>
+                <div class="ps-1">削除</div>
+              </button>
+
+              <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1" data-bs-toggle="modal"
+                data-bs-target="#clearModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                  class="bi bi-x-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+                <div class="ps-1">すべてクリア</div>
+              </button>
+              <div class="modal fade" id="clearModal" tabindex="-1" aria-labelledby="clearModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content bg-dark">
+                    <div class="modal-body ">
+                      現在の定型文の中をすべてクリアします。本当によろしいですか？
+                      <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-danger btn-sm me-2 p-1">すべてクリア</button>
+                        <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mx-2">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+
+            </div>
+            <hr class="m-2">
+
+            <div class="mx-2">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="collapse w-100" id="collapseHashtag">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="ハッシュタグ" aria-label="ハッシュタグ"
+                      aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag1" aria-expanded="false"
+                      aria-controls="hashtag1">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <div>
+                    <input class="form-check-input check-quick ms-2" type="checkbox" id="quickCheckbox" value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <textarea class="form-control p-1 rounded-0" placeholder="定型文" aria-label="定型文"
+                  id="exampleFormControlTextarea1" rows="1"></textarea>
+              </div>
+
+            </div>
+            <hr class="m-2">
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定 -->
+    <div class="tab-pane fade mt-3 mx-2 " id="settings" role="tabpanel" style="margin-bottom: 180px;"
+      aria-labelledby="settings-tab">
+      <ul class="list-group list-group-flush">
+        <!-- ファイル名の入力 -->
+        <li class="list-group-item">
+          <h5 class="">カスタマイズ</h5>
+          <label for="blur-value" class="form-label d-flex">項目: <div class="ps-2" id="blur-intensity"></div></label>
+        </li>
+        <!-- ファイル形式の選択 -->
+        <li class="list-group-item">
+          <h5 class="">例</h5>
+          <ul class="my-2 ">
+            <li>
+            </li>
+            <li>
+            </li>
+            <li>
+            </li>
+          </ul>
+        </li>
+        <li class="list-group-item">
+        </li>
+      </ul>
+    </div>
+
+    <!-- 概要 -->
+    <div class="tab-pane fade mt-2 mx-2" id="description" role="tabpanel" style="margin-bottom: 200px;"
+      aria-labelledby="description-tab">
+      <div>
+        <h5>概要</h5>
+        <p class="my-1 fw-bold">説明:</p>
+        <p>
+          このChrome拡張機能を使えば，○○できます。
+        </p>
+        <p class="my-1 fw-bold">拡張機能の主な特徴:</p>
+        <p class="mt-1">機能の説明を書く</p>
+        <p class="my-1 fw-bold">注意点:</p>
+        <p class="mt-1">注意点を書く</p>
+      </div>
+    </div>
+
+    <!-- チュートリアル -->
+    <div class="tab-pane fade mt-2 mx-2" id="tutorial" role="tabpanel" style="margin-bottom: 200px;"
+      aria-labelledby="tutorial-tab">
+
+      <p class="mb-1 fw-bold">
+        Sampleを有効にする
+      </p>
+      <ul class="m-1">
+        <li>拡張機能のポップアップを開き，「Sampleを有効にする」のトグルボタンをクリック</li>
+        <li> </li>
+        <li></li>
+      </ul>
+      <div class="mb-3">無効にする場合も同じ操作を行ってください。</div>
+      <p class="mb-1 fw-bold">
+        設定
+      </p>
+      <ul>
+        <li>
+
+        </li>
+        <li>
+
+        </li>
+        <li>
+
+        </li>
+      </ul>
+      <p class="mb-1 fw-bold">
+        操作方法
+      </p>
+      <ul>
+        <li>
+
+        </li>
+        <li>
+
+        </li>
+      </ul>
+    </div>
+
+    <!-- 詳細情報 -->
+    <div class="tab-pane fade mt-2 mx-2" id="info" role="tabpanel" style="margin-bottom: 200px;"
+      aria-labelledby="info-tab">
+      <ul class="list-group list-group-flush">
+        <h5 class="pt-3 ps-2 mb-2">詳細</h5>
+
+        <li class="list-group-item">
+          <a class=""
+            href="https://chromewebstore.google.com/detail/meet-captions-logger-meet/ngbmoalopgfhbfkjidlblfeheehaniie?authuser=0&hl=ja"
+            id="store_link">ストアページに移動:</a>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">名前:</p>
+          <p class="m-0" id="extension-name"></p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">説明: </p>
+
+          <p class="m-0" id="extension-description"></p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">バージョン: </p>
+          <p class="m-0" id="extension-version"></p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">ID: </p>
+          <p class="m-0" id="extension-id"></p>
+        </li>
+        <li class="list-group-item">
+          <p>権限</p>
+        </li>
+        <li class="list-group-item">
+          <p>サイトへのアクセス:</p>
+          <p id="permission-info">アクセスしたウェブサイト上にある自分の全データの読み取りと変更をこの拡張機能に許可します。</p>
+          <span id="site-access">Checking...</span>
+        </li>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">シークレット モードでの実行を許可する: </p>
+          <p class="m-0" id="incognito-enabled"></p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">言語: </p>
+          <p class="m-0">日本語 </p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">提供元: </p>
+          <p class="m-0">yhotta240</p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">デベロッパー: </p>
+          <p class="m-0">yhotta240@gmail.com </p>
+        </li>
+        <li class="list-group-item">
+          <p class="m-0">GitHub: </p>
+          <a class="m-0" id="github-link"
+            href="https://github.com/yhotta240/easy-web-starter-kit-jp">https://github.com/yhotta240/easy-web-starter-kit-jp
+          </a>
+        </li>
+        <li class="list-group-item">
+        </li>
+      </ul>
+      <div class="ps-0 " style="margin-bottom: 180px;">
+        <h5 class="ps-1 mt-3">プライバシー</h5>
+        <div class="privacy">
+          <p class="px-3 py-2 m-0">お客様のデータを収集または使用しないことを表明しています。</p>
+          <p class="ps-3">お客様のデータについて以下を宣言します。</p>
+          <div class="p-2">
+            <ul>
+              <li>
+                承認されている以外の用途で第三者に販売しないこと
+              </li>
+              <li>
+                アイテムの中心機能と関係のない目的で使用または転送しないこと
+              </li>
+              <li>
+                信用力を判断する目的または融資目的で使用または転送しないこと
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- 固定フッターとしての開閉パネル -->
+  <div class="fixed-bottom bg-dark text-white">
+    <button class="btn btn-dark btn-sm p-0 w-100" id="panelButton">
+      メッセージパネルを開く
+    </button>
+    <!-- メッセージ -->
+    <div id="messagePanel" class=" p-1 overflow-auto message">
+      <div class="d-flex justify-content-between">
+        <div class="fw-light py-auto">メッセージ</div>
+        <button type="button" class="btn btn-dark btn-sm" id="messageClearButton">
+          <img src="../icons/list_clear.png" alt="message clear button" height="14">
+        </button>
+      </div>
+
+      <div id="message" class="bg-dark" style="border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: auto;">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const focusableDiv = document.getElementById('focusableDiv');
+    const actionButton = document.getElementById('actionButton');
+    focusableDiv.addEventListener('click', () => {
+      event.stopPropagation();
+      focusableDiv.focus();
+    });
+    actionButton.addEventListener('click', (event) => {
+      event.stopPropagation(); // 背景クリックイベントの伝播を防止
+      focusableDiv.focus();
+    });
+  </script>
+
+  <!-- スクリプトのリンク -->
+  <script src="bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="popup.js"></script>
+</body>
