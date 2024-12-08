@@ -29,7 +29,6 @@ chrome.storage.local.get(['settings', 'isEnabled'], (data) => {
   messageOutput(dateTime(), isEnabled ? 'Twitch 定型チャットは有効になっています' : 'Twitch 定型チャットは無効になっています');
 });
 
-
 const addSetBtn = document.getElementById("add-set-btn");
 const addTemplateSetBtn = document.getElementById("default-set-btn");
 const renameSetBtn = document.getElementById("rename-set-btn");
@@ -178,58 +177,13 @@ function addTabContent(uuid) {
 let preTabItem;
 // 追加
 addSetBtn.addEventListener('click', () => {
-  const inputNameForm = document.getElementById("add-set-name");
-  if (inputNameForm) {
-    const activeTab = document.querySelector('#tabItem .nav-link.active');
-    if (activeTab) {//アクティブなタブ削除
-      activeTab.classList.remove('active');
-      console.log(activeTab)
-      const deleteId = activeTab.getAttribute('data-bs-target');
-      if (deleteId !== "#v-pills-input") {
-        const deleteContent = document.getElementById(deleteId.slice(1));
-        //アクティブなコンテンツ削除
-        if (deleteContent) {
-          deleteContent.classList.remove('show', 'active');
-        }
-      }
-    }
-    const focusTabs = document.querySelectorAll('#tabItem .nav-link');
-    focusTabs[focusTabs.length - 1].classList.add("active");
-    return;
-  }
   const tabItem = document.getElementById("tabItem");
-  // 入力完了時（Enterキー or フォーカスが外れたとき）の処理
-  function handleInputFinish(input) {
-    const value = input.value.trim(); // 入力値を取得してトリム
-    const uuid = generateShortUUID();
-    if (value) {
-      tabItem.innerHTML = preTabItem + `
-      <li class="nav-item" role="presentation">
-        <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
-          data-bs-target="#v-pills-${uuid}" role="tab" aria-controls="v-pills-${uuid}"
-          aria-selected="false">${value}
-        </button>
-      </li>
-      `;
-    }
-    const activeTab = document.querySelector('#tabItem .nav-link.active');
-    if (activeTab) {//アクティブなタブ削除
-      activeTab.classList.remove('active');
-    }
-    const focusTabs = document.querySelectorAll('#tabItem .nav-link');
-    if (focusTabs.length) {
-      focusTabs[focusTabs.length - 1].classList.add('active');
-      const newTab = focusTabs[focusTabs.length - 1];
-      newTab.classList.add('active');
-      const targetId = newTab.getAttribute('data-bs-target');
-      addTabContent(uuid);
-    }
-  }
+  const uuid = generateShortUUID();
   preTabItem = tabItem.innerHTML;
   tabItem.innerHTML += `
   <li class="nav-item" role="presentation">
-    <button type="button" class="w-75 nav-link rounded-0 p-2" id=" v-pills-input-tab"
-      data-bs-toggle="pill" data-bs-target="#v-pills-input" role="tab" aria-controls="v-pills-input"
+    <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
+      data-bs-target="#v-pills-${uuid}" role="tab" aria-controls="v-pills-${uuid}"
       aria-selected="false">
       <input type="text" class=" form-control p-0 ps-1 rounded-0" placeholder="名前を入力" aria-label="twitch"
         aria-describedby="basic-addon1" id="add-set-name">
@@ -241,7 +195,7 @@ addSetBtn.addEventListener('click', () => {
     activeTab.classList.remove('active');
     const deleteId = activeTab.getAttribute('data-bs-target');
     if (deleteId) {
-      const deleteContent = document.getElementById(deleteId.slice(1));
+      const deleteContent = document.querySelector(deleteId);
       //アクティブなコンテンツ削除
       if (deleteContent) {
         deleteContent.classList.remove('show', 'active');
@@ -251,20 +205,49 @@ addSetBtn.addEventListener('click', () => {
   const focusTabs = document.querySelectorAll('#tabItem .nav-link');
   focusTabs[focusTabs.length - 1].classList.add("active");
 
-  const inputName = document.getElementById("add-set-name");
-  console.log("inputName", inputName);
+  const inputName = document.querySelector("#add-set-name");
   inputName.focus();
-  if (inputName) {
-    // inputName.addEventListener("blur", () => handleInputFinish(inputName));
-    inputName.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleInputFinish(inputName);
-        // inputName.blur(); // フォーカスを外す
-      }
-    });
-  }
+  inputName.addEventListener("blur", () => {
+    if (!inputName.dataset.handled) {
+      inputName.dataset.handled = "true";
+      handleInputFinish(inputName);
+    }
+  });
 
+  inputName.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      if (!inputName.dataset.handled) {
+        inputName.dataset.handled = "true";
+        handleInputFinish(inputName);
+      }
+      inputName.blur();
+    }
+  });
+
+
+
+  function handleInputFinish(input) {
+    const value = input.value.trim();
+    const tabItem = document.querySelector('#tabItem ');
+    const newActiveTab = tabItem.querySelector('.nav-link.active');
+    if (value) {
+      if (newActiveTab) {
+        newActiveTab.innerHTML = `${value}`;
+        addTabContent(uuid);
+      }
+    } else {
+      const lastTab = tabItem.children[tabItem.children.length - 1];
+      if (!newActiveTab || newActiveTab === lastTab.querySelector('.nav-link')) {
+        lastTab.remove();
+        const firstTab = document.querySelector('#tabItem .nav-item .nav-link');
+        if (firstTab) {
+          firstTab.classList.add("active");
+        }
+      }
+    }
+  }
 });
+
 //テンプレ追加
 addTemplateSetBtn.addEventListener('click', () => {
   const tabItem = document.getElementById("tabItem");
@@ -346,15 +329,17 @@ addTemplateSetBtn.addEventListener('click', () => {
 });
 
 renameSetBtn.addEventListener('click', () => {
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  const inputNameForm = activeTab.querySelector("#add-set-name");
-  const inputRenameForm = activeTab.querySelector("#re-set-name");
-  if (inputNameForm || inputRenameForm) return;
-  const existingInput = document.querySelector("#add-set-name");
-  if (existingInput) {
-    existingInput.parentElement.parentElement.remove();
+  const tabItem = document.querySelector('#tabItem');
+  let activeTab = tabItem.querySelector('.nav-link.active') || tabItem.querySelector('.nav-item .nav-link');
+  if (activeTab) {
+    activeTab.classList.add("active");
   }
-  const inputRename = document.querySelector("#re-set-name");
+  const inputNameForm = document.querySelector("#add-set-name");
+  const inputRenameForm = document.querySelector("#re-set-name");
+  if (inputNameForm || inputRenameForm) return;
+  // if (inputNameForm) {
+  //   inputNameForm.parentElement.parentElement.remove();
+  // }
   const currentName = activeTab.textContent.trim();
   activeTab.innerHTML = `
     <input 
@@ -518,7 +503,7 @@ saveSetBtn.addEventListener('click', () => {
   saveAction();
 });
 
-function targetTab(tabItem) {
+function targetTab(tabItem) {//プレビューに反映
   const activeTab = tabItem.querySelector('.nav-link.active');
   const targetId = activeTab.getAttribute('data-bs-target');
   console.log("targetId", targetId);
