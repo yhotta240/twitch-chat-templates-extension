@@ -4,10 +4,9 @@ html {
 
 html,
 body {
-  width: 26rem;
-  min-width: 26rem;
+  width: 30rem;
+  min-width: 30rem;
   margin: 0;
-
 }
 
 #messagePanel {
@@ -94,13 +93,57 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.template-select{
+.btn-edit {
+  background-color: rgba(209, 74, 250, 0.5);
+  --bs-btn-color: #fff;
+}
+
+.btn-edit:hover {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: rgba(194, 3, 252, 0.5);
+  --bs-btn-border-color: rgba(194, 3, 252, 0.5);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: rgba(194, 3, 252, 0.5);
+  --bs-btn-hover-border-color: rgba(194, 3, 252, 0.5);
+  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: rgba(194, 3, 252, 0.5);
+  --bs-btn-active-border-color: rgba(194, 3, 252, 0.5);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: rgba(194, 3, 252, 0.5);
+  --bs-btn-disabled-border-color: rgba(194, 3, 252, 0.5);
+}
+
+.btn-copy {
+  background-color: rgba(67, 175, 247, 0.5);
+}
+
+.btn-copy:hover {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: rgba(0, 153, 255, 0.5);
+  --bs-btn-border-color: rgba(0, 153, 255, 0.5);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: rgba(0, 153, 255, 0.5);
+  --bs-btn-hover-border-color: rgba(0, 153, 255, 0.5);
+  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: rgba(0, 153, 255, 0.5);
+  --bs-btn-active-border-color: rgba(0, 153, 255, 0.5);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: rgba(0, 153, 255, 0.5);
+  --bs-btn-disabled-border-color: rgba(0, 153, 255, 0.5);
+}
+
+
+.template-select {
   border: 1px solid transparent;
 }
 
 .template-select:focus {
   border: 1px solid rgb(147, 30, 243);
-  outline: none; 
+  outline: none;
   box-shadow: 0 0 5px rgba(147, 30, 243, 0.7);
 }
 
@@ -143,4 +186,3 @@ body {
   --bs-nav-link-hover-color: #e7e0e0;
   border-bottom-color: rgb(33, 37, 41);
 }
-
