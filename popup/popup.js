@@ -7,25 +7,21 @@ const messagePanel = document.getElementById('messagePanel');
 const messageDiv = document.getElementById('message'); // メッセージ表示用のdiv要素を取得
 
 
-// チェックボックス（トグルボタン）の状態が変更されたとき，ツールの有効/無効状態を更新
+// ツールの有効/無効状態
 enabledElement.addEventListener('change', (event) => {
-  isEnabled = event.target.checked; // チェックボックス（トグルボタン）の選択状態を取得
-
-  // 現在の有効/無効状態をストレージに保存
+  isEnabled = event.target.checked;
   chrome.storage.local.set({ isEnabled: isEnabled }, () => {
-    // 有効/無効状態に応じてメッセージを出力
     messageOutput(dateTime(), isEnabled ? 'Twitch 定型チャットは有効になっています' : 'Twitch 定型チャットは無効になっています');
   });
 });
 
 
-// 保存された設定（'settings'と'isEnabled'）を読み込む
+// 保存された設定を読み込む
 chrome.storage.local.get(['settings', 'isEnabled'], (data) => {
   if (enabledElement) {
-    isEnabled = data.isEnabled || false; // 'isEnabled'が未設定の場合はデフォルトでfalseを使用
-    enabledElement.checked = isEnabled; // チェックボックス（トグルボタン）の状態を'isEnabled'の値に設定
+    isEnabled = data.isEnabled || false;
+    enabledElement.checked = isEnabled;
   }
-  // 有効/無効状態に応じてメッセージを出力
   messageOutput(dateTime(), isEnabled ? 'Twitch 定型チャットは有効になっています' : 'Twitch 定型チャットは無効になっています');
 });
 
@@ -34,7 +30,6 @@ const addTemplateSetBtn = document.getElementById("default-set-btn");
 const renameSetBtn = document.getElementById("rename-set-btn");
 const copySetBtn = document.getElementById("copy-set-btn");
 const deleteSetBtn = document.getElementById("delete-set-btn");
-const deleteSet = document.getElementById("set-delete");
 const saveSetBtn = document.getElementById("save-set-btn");
 
 // デフォルトテンプレートオブジェクト
@@ -159,7 +154,7 @@ function addTabContent(uuid) {
     </div>
 
     <div class="d-flex mx-2 mb-1">
-      <button id="add-template-btn" class="btn-customs btn btn-sm d-flex align-items-center py-0 ps-0 pe-1">
+      <button  class="add-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 ps-0 pe-1">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus"
           viewBox="0 0 16 16">
           <path
@@ -169,17 +164,15 @@ function addTabContent(uuid) {
       </button>
     </div>
     <!-- 定型文 -->
-    <div id="template-forms" class="template-forms">
+    <div class="template-forms">
     </div>
   </div>`;
 }
 
-let preTabItem;
 // 追加
 addSetBtn.addEventListener('click', () => {
   const tabItem = document.getElementById("tabItem");
   const uuid = generateShortUUID();
-  preTabItem = tabItem.innerHTML;
   tabItem.innerHTML += `
   <li class="nav-item" role="presentation">
     <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
@@ -224,25 +217,28 @@ addSetBtn.addEventListener('click', () => {
     }
   });
 
-
-
   function handleInputFinish(input) {
     const value = input.value.trim();
     const tabItem = document.querySelector('#tabItem ');
     const newActiveTab = tabItem.querySelector('.nav-link.active');
+
     if (value) {
       if (newActiveTab) {
         newActiveTab.innerHTML = `${value}`;
-        addTabContent(uuid);
       }
+      addTabContent(uuid);
     } else {
       const lastTab = tabItem.children[tabItem.children.length - 1];
       if (!newActiveTab || newActiveTab === lastTab.querySelector('.nav-link')) {
-        lastTab.remove();
-        const firstTab = document.querySelector('#tabItem .nav-item .nav-link');
-        if (firstTab) {
-          firstTab.classList.add("active");
+        if (lastTab) {
+          lastTab.remove();
         }
+        const firstTab = document.querySelector('#tabItem .nav-item .nav-link');
+        if (!firstTab) return;
+        firstTab.classList.add("active");
+        const firstTargetId = firstTab.getAttribute('data-bs-target');
+        const firstTargetContent = document.querySelector(firstTargetId);
+        firstTargetContent.classList.add('show', 'active');
       }
     }
   }
@@ -415,41 +411,62 @@ copySetBtn.addEventListener('click', () => {
   }
 });
 
+// 削除
 deleteSetBtn.addEventListener('click', () => {
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  if (activeTab) {
-    console.log('Active Tab Text:', activeTab.textContent.trim());
-    const setName = document.getElementById("set-name");
-    if (setName) {
-      setName.textContent = activeTab.textContent.trim();
-    }
+  const tabItem = document.querySelector('#tabItem');
+  const activeTab = tabItem.querySelector('.nav-link.active');
+  const modalBody = document.querySelector('#exampleModal .modal-body');
+  if (tabItem.children.length > 1) {
+    modalBody.innerHTML = `
+      セット名: <span id="set-name" class="text-danger">${activeTab.textContent}</span> を削除します。本当によろしいですか？
+      <div class="d-flex justify-content-end mt-2">
+        <button type="button" id="set-delete" class="btn btn-danger btn-sm me-2 p-1" data-bs-dismiss="modal">削除</button>
+        <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    `;
+  } else {
+    // 削除不可メッセージ
+    modalBody.innerHTML = `
+      セット名: <span id="set-name" class="text-danger">削除不可</span><br>
+      残り1つのため，削除できません。
+      <div class="d-flex justify-content-end mt-2">
+        <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    `;
+    messageOutput(dateTime(), `残り1つのため，${activeTab.textContent}の削除は行えません。`);
+    return;
   }
-});
-
-//セット削除
-deleteSet.addEventListener('click', () => {
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  if (activeTab) {//アクティブなタブ削除
+  //セット削除
+  document.getElementById('set-delete').addEventListener('click', () => {
+    // アクティブなタブを削除
     activeTab.parentElement.remove();
-    const deleteId = activeTab.getAttribute('data-bs-target').slice(1);
-    const deleteContent = document.getElementById(deleteId);
-    if (deleteContent) {
-      //アクティブなコンテンツ削除
-      deleteContent.classList.remove('show', 'active');
-    }
-  }
 
-  //アクティブ化
-  const remainingTabs = document.querySelectorAll('#tabItem .nav-link');
-  if (remainingTabs.length > 0) {
-    remainingTabs[0].classList.add('active');//最初のタブをアクティブ化
-    const targetContentId = remainingTabs[0].getAttribute('data-bs-target');
-    const targetContent = document.getElementById(targetContentId.slice(1));
-    if (targetContent) {
-      targetContent.classList.add('show', 'active');
+    // 対応するタブコンテンツを削除
+    const deleteId = activeTab.getAttribute('data-bs-target');
+    const deleteContent = document.querySelector(deleteId);
+    if (deleteContent) {
+      deleteContent.remove();
     }
-  }
+
+    // 残ったタブのうち最初のタブをアクティブ化
+    const remainingTabs = tabItem.querySelectorAll('.nav-link');
+    if (remainingTabs.length > 0) {
+      const firstTab = remainingTabs[0];
+      firstTab.classList.add('active');
+
+      const targetContentId = firstTab.getAttribute('data-bs-target');
+      const targetContent = document.querySelector(targetContentId);
+      if (targetContent) {
+        targetContent.classList.add('show', 'active');
+      }
+    }
+
+    // モーダルのリセット（オプション）
+    modalBody.innerHTML = '';
+  });
 });
+
+
 
 // 定型文をストレージに保存
 function saveAction() {
@@ -499,6 +516,7 @@ function saveAction() {
     messageOutput(dateTime(), '定型文プリセットの内容がすべて保存されました');
   });
 }
+
 saveSetBtn.addEventListener('click', () => {
   saveAction();
 });
@@ -506,10 +524,7 @@ saveSetBtn.addEventListener('click', () => {
 function targetTab(tabItem) {//プレビューに反映
   const activeTab = tabItem.querySelector('.nav-link.active');
   const targetId = activeTab.getAttribute('data-bs-target');
-  console.log("targetId", targetId);
-  console.log("activeTab", activeTab.textContent);
   const viewContent = document.querySelector(targetId);
-  console.log("viewContent", viewContent);
   if (!viewContent) return;
   const templateForms = viewContent.querySelector('.template-forms');
   const children = Array.from(templateForms.children);
@@ -538,14 +553,13 @@ function targetTab(tabItem) {//プレビューに反映
 // DOMの読み込み完了を監視し，完了後に実行
 document.addEventListener('DOMContentLoaded', function () {
   // saveAction();
-  // manifest.jsonから拡張機能の情報を取得
   const manifestData = chrome.runtime.getManifest();
   document.getElementById('name').textContent = `${manifestData.name}`;
 
   const tabItem = document.querySelector('#tabItem');
   targetTab(tabItem);
   tabItem.addEventListener('click', () => {
-    targetTab(tabItem);
+    targetTab(tabItem);//プレビュー
   });
 
   // ツールチップ（ハッシュタグをONにする）
@@ -558,17 +572,25 @@ document.addEventListener('DOMContentLoaded', function () {
     new bootstrap.Tooltip(e);
   });
 
-  const addTemplateBtn = document.getElementById("add-template-btn");
+  const activeTab = tabItem.querySelector('.nav-link.active');
+  const targetId = activeTab.getAttribute('data-bs-target');
+  const tabId = targetId.slice(9);
+  const tabContent = document.querySelector("#v-pills-tabContent");
+  const activeContent = tabContent.querySelector(targetId);
+  const addTemplateBtn = activeContent.querySelector(".add-template-btn");
+  console.log("targetId1", targetId);
+  console.log("addTemplateBtn", addTemplateBtn);
   addTemplateBtn.addEventListener("click", () => {
-    const templateForms = document.getElementById("template-forms");
+    const templateForms = activeContent.querySelector(".template-forms");
+    console.log("templateForms", templateForms);
     // const filteredChildren = Array.from(templateForms.children).filter(child => child.tagName !== 'HR');
     const filteredChildren = templateForms.children;
     const newTemplateHTML = `
-    <div id="template-form-${filteredChildren.length}">
+    <div id="template-form-${tabId}-${filteredChildren.length}">
       <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
         <div class="d-flex justify-content-between mb-1">
           <!-- ハッシュタグ -->
-          <div class="collapse w-100" id="hashtag-${filteredChildren.length}">
+          <div class="collapse w-100" id="hashtag-${tabId}-${filteredChildren.length}">
             <div class="input-group rounded-top ">
               <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
               <input type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ"
@@ -579,8 +601,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <!-- ハッシュタグ表示 -->
             <div>
               <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
-                data-bs-toggle="collapse" data-bs-target="#hashtag-${filteredChildren.length}" aria-expanded="false"
-                aria-controls="hashtag-${filteredChildren.length}">
+                data-bs-toggle="collapse" data-bs-target="#hashtag-${tabId}-${filteredChildren.length}" aria-expanded="false"
+                aria-controls="hashtag-${tabId}-${filteredChildren.length}">
               <label class="form-check-label" for="hashCheckbox"></label>
             </div>
             <!-- クイック送信 -->
@@ -591,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <!-- クリアボタン -->
             <button class="clearBtn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
-              data-target="textarea-${filteredChildren.length}">
+              data-target="textarea-${tabId}-${filteredChildren.length}">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
                 class="bi bi-x-circle" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -600,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
               </svg>
               <div class="ps-1">クリア</div>
             </button>
-            <button data-target="template-form-${filteredChildren.length}"
+            <button data-target="template-form-${tabId}-${filteredChildren.length}"
               class="delete-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
               type="button">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -613,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>
         <div class="">
-          <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${filteredChildren.length + 1}" aria-label="定型文${filteredChildren.length + 1}" id="textarea-${filteredChildren.length + 1}"
+          <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${filteredChildren.length + 1}" aria-label="定型文${filteredChildren.length + 1}" id="textarea-${tabId}-${filteredChildren.length + 1}"
             rows="1"></textarea>
         </div>
       </div>
@@ -631,11 +653,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (event.target.closest(".delete-template-btn")) {
         const button = event.target.closest(".delete-template-btn");
         const targetId = button.getAttribute("data-target");
+        const tabId = targetId.slice(9);
         const templateForm = document.getElementById(targetId);
         if (templateForm) {
           console.log("targetId", targetId);
           templateForm.remove();
-          resetTemplateIndices(); // 削除後にインデックスをリセット
+          resetTemplateIndices(tabId); // 削除後にインデックスをリセット
         }
       }
 
@@ -654,14 +677,14 @@ document.addEventListener('DOMContentLoaded', function () {
   initButtonHandlers();
 
   // インデックスをリセットする処理（下が0になるよう逆順で設定）
-  function resetTemplateIndices() {
-    const templateForms = document.getElementById("template-forms");
+  function resetTemplateIndices(tabId) {
+    const templateForms = document.querySelector(".template-forms");
     const children = Array.from(templateForms.children);
 
     // インデックスをリセットする際に順番を保持しつつ更新
     children.reverse().forEach((child, reverseIndex) => {
       const newIndex = reverseIndex; // 下から0になるようインデックス設定
-      child.id = `template-form-${newIndex}`;
+      child.id = `template-form-${tabId}-${newIndex}`;
       const textarea = child.querySelector('textarea');
       const hashtagCollapse = child.querySelector('.collapse');
       const clearBtn = child.querySelector('.clearBtn');
@@ -671,13 +694,13 @@ document.addEventListener('DOMContentLoaded', function () {
         textarea.setAttribute('aria-label', `定型文${newIndex + 1}`); // アリアラベルを更新
       }
       if (hashtagCollapse) {
-        hashtagCollapse.id = `hashtag-${newIndex}`; // ハッシュタグのIDを更新
+        hashtagCollapse.id = `hashtag-${tabId}-${newIndex}`; // ハッシュタグのIDを更新
       }
       if (clearBtn) {
-        clearBtn.setAttribute('data-target', `textarea-${newIndex}`); // クリアボタンのデータターゲットを更新
+        clearBtn.setAttribute('data-target', `textarea-${tabId}-${newIndex}`); // クリアボタンのデータターゲットを更新
       }
       if (deleteBtn) {
-        deleteBtn.setAttribute('data-target', `template-form-${newIndex}`); // 削除ボタンのデータターゲットを更新
+        deleteBtn.setAttribute('data-target', `template-form-${tabId}-${newIndex}`); // 削除ボタンのデータターゲットを更新
       }
     });
   }
