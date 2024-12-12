@@ -132,12 +132,6 @@
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark">
               <div class="modal-body ">
-                <!-- セット名: <span id="set-name" class="text-danger"></span> を削除します。本当によろしいですか？
-                <div class="d-flex justify-content-end mt-2">
-                  <button type="button" id="set-delete" class="btn btn-danger btn-sm me-2 p-1"
-                    data-bs-dismiss="modal">削除</button>
-                  <button type="button" class="btn btn-secondary btn-sm p-1" data-bs-dismiss="modal">閉じる</button>
-                </div> -->
               </div>
             </div>
           </div>
@@ -159,7 +153,7 @@
         <ul class="nav nav-tabs " id="tabItem" role="tablist">
           <li class="nav-item " role="presentation">
             <button type="button" class="nav-link active rounded-0 p-2" id="v-pills-9a4a1c8c-1a7b-tab"
-              data-bs-toggle="pill" data-bs-target="#v-pills-9a4a1c8c-1a7b" role="tab"
+              data-bs-toggle="pill" data-bs-target="#v-pills-0-9a4a1c8c-1a7b" role="tab"
               aria-controls="v-pills-9a4a1c8c-1a7b" aria-selected="false">template
             </button>
           </li>
@@ -168,18 +162,17 @@
         <!-- プリセット詳細 -->
         <div class="tab-content p-0 template-div pb-4" id="v-pills-tabContent">
           <!-- 1番目 -->
-          <div class="tab-pane fade show active " id="v-pills-9a4a1c8c-1a7b" role="tabpanel"
+          <div class="tab-pane fade show active " id="v-pills-0-9a4a1c8c-1a7b" role="tabpanel"
             aria-labelledby="v-pills-9a4a1c8c-1a7b-tab" tabindex="0">
 
             <div class="d-flex justify-content-between px-2 py-3">
               <div class="input-group rounded-top  w-100">
-                <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark"
-                  id="basic-addon1">www.twitch.tv/</span>
+                <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark">www.twitch.tv/</span>
                 <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
-                  aria-describedby="basic-addon1" id="twitch-id">
+                  aria-describedby="basic-addon1" id="twitch-id-9a4a1c8c-1a7b">
               </div>
               <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
-                data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+                data-bs-target="#collapseInfo-9a4a1c8c-1a7b" aria-expanded="false" aria-controls="collapseInfo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
                   class="bi bi-info-circle-fill " viewBox="0 0 16 16">
                   <path
@@ -188,27 +181,27 @@
                 <div class="ps-1 text-nowrap">詳細</div>
               </button>
             </div>
-            <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo">
+            <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo-9a4a1c8c-1a7b">
               <div class="ms-2 d-flex">作成日：
-                <div class="createDate">2024-12-07 05:18</div>
+                <div class="createDate"></div>
               </div>
               <div class="ms-2 d-flex">更新日：
-                <div class="updateDate">2024-12-07 05:18</div>
+                <div class="updateDate"></div>
               </div>
               <div class="ms-2 d-flex">作成数：
-                <div class="createNum">12</div>
+                <div class="createNum"></div>
               </div>
               <div class="ms-2 d-flex">使用回数：
-                <div class="useNum">12</div>
+                <div class="useNum"></div>
               </div>
             </div>
 
             <div class="ms-2 mb-1">
               <div class="form-check">
-                <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck"
+                <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck-9a4a1c8c-1a7b"
                   data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
                   aria-controls="collapseHashtag">
-                <label class="form-check-label " for="allHashCheck">
+                <label class="form-check-label " for="allHashCheck-9a4a1c8c-1a7b">
                   ハッシュタグをすべて表示する
                 </label>
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -219,8 +212,8 @@
                 </svg>
               </div>
               <div class="form-check">
-                <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck">
-                <label class="form-check-label " for="allQuickCheck">
+                <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck-9a4a1c8c-1a7b">
+                <label class="form-check-label " for="allQuickCheck-9a4a1c8c-1a7b">
                   クイック送信をすべてONにする
                 </label>
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -244,7 +237,7 @@
             </div>
             <!-- 定型文 -->
             <div class="template-forms">
-              <div id="template-form-9a4a1c8c-1a7b-tab-0">
+              <div id="template-form-9a4a1c8c-1a7b-0">
                 <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
                   <div class="d-flex justify-content-between mb-1">
                     <!-- ハッシュタグ -->
@@ -252,7 +245,7 @@
                       <div class="input-group rounded-top ">
                         <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
                         <input type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ"
-                          aria-label="ハッシュタグ" aria-describedby="basic-addon1">
+                          aria-label="ハッシュタグ" aria-describedby="basic-addon1" maxlength="20">
                       </div>
                     </div>
                     <div class="d-flex justify-content-end w-100 mb-1">
