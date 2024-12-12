@@ -32,6 +32,30 @@ const copySetBtn = document.getElementById("copy-set-btn");
 const deleteSetBtn = document.getElementById("delete-set-btn");
 const saveSetBtn = document.getElementById("save-set-btn");
 
+function getTabInfo() {
+  const tabItem = document.querySelector('#tabItem');
+  const activeTab = tabItem.querySelector('.nav-link.active');
+  // console.log("activeTab", activeTab);
+  const noActiveTab = tabItem.querySelector('.nav-link');
+  const targetId = activeTab ? activeTab.getAttribute('data-bs-target') : null;
+  // console.log("targetId", targetId);
+  const tabUuid = targetId ? targetId.slice(-13) : null;
+  const tabContents = document.querySelector("#v-pills-tabContent");
+  const activeContent = targetId ? tabContents.querySelector(targetId) : null;
+  const noActiveContent = tabContents.querySelector(".tab-pane");
+  // console.log("activeContent", activeContent);
+  return {
+    tabItem,
+    activeTab,
+    noActiveTab,
+    targetId,
+    tabUuid,
+    tabContents,
+    activeContent,
+    noActiveContent
+  }
+}
+
 // デフォルトテンプレートオブジェクト
 const defaultTemplate = {
   [0]: {
@@ -81,26 +105,22 @@ const defaultTemplate = {
   }
 };
 
+// コンテンツの追加
 function addTabContent(uuid) {
   console.log("uuid", uuid);
-  const tabPane = document.querySelector("#v-pills-tabContent .tab-pane.show.active");
-  if (tabPane) {
-    tabPane.classList.remove('show', 'active');
-  }
-  const addTabPane = document.querySelector("#v-pills-tabContent");
-  console.log("addTabPane", addTabPane);
+
+  const { tabItem, tabContents: addTabPane } = getTabInfo();
   addTabPane.innerHTML += `          
-  <div class="tab-pane fade show active " id="v-pills-${uuid}" role="tabpanel"
+  <div class="tab-pane fade show active " id="v-pills-${tabItem.children.length - 1}-${uuid}" role="tabpanel"
           aria-labelledby="v-pills-${uuid}-tab" tabindex="0">
     <div class="d-flex justify-content-between px-2 py-3">
       <div class="input-group rounded-top  w-100">
-        <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark"
-          id="basic-addon1">www.twitch.tv/</span>
+        <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark">www.twitch.tv/</span>
         <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
-          aria-describedby="basic-addon1" id="twitch-id">
+          aria-describedby="basic-addon1" id="twitch-id-${uuid}">
       </div>
       <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
-        data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+        data-bs-target="#collapseInfo-${uuid}" aria-expanded="false" aria-controls="collapseInfo">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
           class="bi bi-info-circle-fill " viewBox="0 0 16 16">
           <path
@@ -109,27 +129,27 @@ function addTabContent(uuid) {
         <div class="ps-1 text-nowrap">詳細</div>
       </button>
     </div>
-    <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo">
+    <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo-${uuid}}">
       <div class="ms-2 d-flex">作成日：
-        <div class="createDate">2024-12-07 05:18</div>
+        <div class="createDate">${dateTime()}</div>
       </div>
       <div class="ms-2 d-flex">更新日：
-        <div class="updateDate">2024-12-07 05:18</div>
+        <div class="updateDate">${dateTime()}</div>
       </div>
       <div class="ms-2 d-flex">作成数：
-        <div class="createNum">12</div>
+        <div class="createNum">0</div>
       </div>
       <div class="ms-2 d-flex">使用回数：
-        <div class="useNum">12</div>
+        <div class="useNum">0</div>
       </div>
     </div>
 
     <div class="ms-2 mb-1">
       <div class="form-check">
-        <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck"
+        <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck-${uuid}"
           data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
           aria-controls="collapseHashtag">
-        <label class="form-check-label " for="allHashCheck">
+        <label class="form-check-label " for="allHashCheck-${uuid}">
           ハッシュタグをすべて表示する
         </label>
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -140,8 +160,8 @@ function addTabContent(uuid) {
         </svg>
       </div>
       <div class="form-check">
-        <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck">
-        <label class="form-check-label " for="allQuickCheck">
+        <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck-${uuid}">
+        <label class="form-check-label " for="allQuickCheck-${uuid}">
           クイック送信をすべてONにする
         </label>
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -166,34 +186,79 @@ function addTabContent(uuid) {
     <!-- 定型文 -->
     <div class="template-forms">
     </div>
-  </div>`;
+  </div>
+  `;
+}
+
+function targetPreview(tabItem) {//プレビューに反映
+  const activeTab = tabItem.querySelector('.nav-link.active');
+  const targetId = activeTab.getAttribute('data-bs-target');
+  const viewContent = document.querySelector(targetId);
+  if (!viewContent) return;
+  const templateForms = viewContent.querySelector('.template-forms');
+  const children = Array.from(templateForms.children);
+  const text = document.querySelector('#text');
+  text.innerHTML = "";
+  children.forEach((child, index) => {
+    const hashtagText = child.querySelector('.hashtag-text')?.value || '';
+    const isQuick = child.querySelector('.is-quick')?.checked || false;
+    const templateText = child.querySelector('.template-text')?.value || '';
+    let viewText = hashtagText ? "#" + hashtagText : templateText;
+    text.innerHTML += `
+      <button 
+        type="button" 
+        class="btn btn-custom my-auto px-2 py-3 template-btn" 
+        data-text="${templateText}" 
+        style="${isQuick ? "color: orange;" : ""}">
+        ${viewText}
+      </button>
+    `;
+  });
+}
+
+function handleInputFinish(input, uuid) {
+  const value = input.value.trim();
+  const { tabItem, activeTab: newActiveTab } = getTabInfo();
+
+  if (value) {
+    if (newActiveTab) {
+      newActiveTab.innerHTML = `${value}`;
+    }
+    addTabContent(uuid);
+  } else {
+    const lastTab = tabItem.children[tabItem.children.length - 1];
+    if (!newActiveTab || newActiveTab === lastTab.querySelector('.nav-link')) {
+      if (lastTab) {
+        lastTab.remove();
+      }
+      const firstTab = document.querySelector('#tabItem .nav-item .nav-link');
+      if (!firstTab) return;
+      firstTab.classList.add("active");
+      const firstTargetId = firstTab.getAttribute('data-bs-target');
+      const firstTargetContent = document.querySelector(firstTargetId);
+      firstTargetContent.classList.add('show', 'active');
+    }
+  }
 }
 
 // 追加
 addSetBtn.addEventListener('click', () => {
-  const tabItem = document.getElementById("tabItem");
+  const { tabItem } = getTabInfo();
   const uuid = generateShortUUID();
   tabItem.innerHTML += `
   <li class="nav-item" role="presentation">
     <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
-      data-bs-target="#v-pills-${uuid}" role="tab" aria-controls="v-pills-${uuid}"
+      data-bs-target="#v-pills-${tabItem.children.length}-${uuid}" role="tab" aria-controls="v-pills-${tabItem.children.length}-${uuid}"
       aria-selected="false">
       <input type="text" class=" form-control p-0 ps-1 rounded-0" placeholder="名前を入力" aria-label="twitch"
         aria-describedby="basic-addon1" id="add-set-name">
     </button>
   </li>
   `;
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  if (activeTab) {//アクティブなタブ削除
-    activeTab.classList.remove('active');
-    const deleteId = activeTab.getAttribute('data-bs-target');
-    if (deleteId) {
-      const deleteContent = document.querySelector(deleteId);
-      //アクティブなコンテンツ削除
-      if (deleteContent) {
-        deleteContent.classList.remove('show', 'active');
-      }
-    }
+  const { activeTab, activeContent: deleteContent } = getTabInfo();
+  activeTab.classList.remove('active');
+  if (activeTab) {
+    deleteContent.classList.remove('show', 'active');
   }
   const focusTabs = document.querySelectorAll('#tabItem .nav-link');
   focusTabs[focusTabs.length - 1].classList.add("active");
@@ -203,7 +268,7 @@ addSetBtn.addEventListener('click', () => {
   inputName.addEventListener("blur", () => {
     if (!inputName.dataset.handled) {
       inputName.dataset.handled = "true";
-      handleInputFinish(inputName);
+      handleInputFinish(inputName, uuid);
     }
   });
 
@@ -211,56 +276,36 @@ addSetBtn.addEventListener('click', () => {
     if (e.key === "Enter") {
       if (!inputName.dataset.handled) {
         inputName.dataset.handled = "true";
-        handleInputFinish(inputName);
+        handleInputFinish(inputName, uuid);
       }
       inputName.blur();
     }
   });
 
-  function handleInputFinish(input) {
-    const value = input.value.trim();
-    const tabItem = document.querySelector('#tabItem ');
-    const newActiveTab = tabItem.querySelector('.nav-link.active');
 
-    if (value) {
-      if (newActiveTab) {
-        newActiveTab.innerHTML = `${value}`;
-      }
-      addTabContent(uuid);
-    } else {
-      const lastTab = tabItem.children[tabItem.children.length - 1];
-      if (!newActiveTab || newActiveTab === lastTab.querySelector('.nav-link')) {
-        if (lastTab) {
-          lastTab.remove();
-        }
-        const firstTab = document.querySelector('#tabItem .nav-item .nav-link');
-        if (!firstTab) return;
-        firstTab.classList.add("active");
-        const firstTargetId = firstTab.getAttribute('data-bs-target');
-        const firstTargetContent = document.querySelector(firstTargetId);
-        firstTargetContent.classList.add('show', 'active');
-      }
-    }
-  }
 });
 
-//テンプレ追加
+// デフォルトテンプレ追加
 addTemplateSetBtn.addEventListener('click', () => {
-  const tabItem = document.getElementById("tabItem");
+  const { tabItem } = getTabInfo();
   const value = 'template'; // 入力値を取得してトリム
   const uuid = generateShortUUID();
   tabItem.innerHTML += `
     <li class="nav-item" role="presentation">
       <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
-        data-bs-target="#v-pills-${uuid}" role="tab" aria-controls="v-pills-${uuid}"
+        data-bs-target="#v-pills-${tabItem.children.length}-${uuid}" role="tab" aria-controls="v-pills-${tabItem.children.length}-${uuid}"
         aria-selected="false">${value}
       </button>
     </li>
   `;
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  if (activeTab) {//アクティブなタブ削除
+  const { activeTab, activeContent: tabPane } = getTabInfo();
+  // const {  } = getTabInfo();
+  console.log("tabPane", tabPane);
+  if (activeTab && tabPane) {
+    tabPane.classList.remove('show', 'active');
     activeTab.classList.remove('active');
   }
+
   const focusTabs = document.querySelectorAll('#tabItem .nav-link');
   if (focusTabs.length) {
     const newTab = focusTabs[focusTabs.length - 1];
@@ -275,57 +320,64 @@ addTemplateSetBtn.addEventListener('click', () => {
     templateForms.innerHTML =
       Object.keys(defaultTemplate).reverse().map((id, index) => {
         const { hashtagText, isQuick, templateText } = defaultTemplate[id];
-        return `
-          <div id="template-form-${id}">
-          <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
-            <div class="d-flex justify-content-between mb-1">
-              <!-- ハッシュタグ -->
-              <div class="collapse w-100" id="hashtag-${id}">
-                <div class="input-group rounded-top ">
-                  <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
-                  <input type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ" aria-label="ハッシュタグ" aria-describedby="basic-addon1" value="${hashtagText}">
-                </div>
-              </div>
-              <div class="d-flex justify-content-end w-100 mb-1">
-                <!-- ハッシュタグ表示 -->
-                <div>
-                  <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${id}" aria-expanded="false" aria-controls="hashtag-${id}" ${hashtagText ? "checked" : ""}>
-                  <label class="form-check-label" for="hashCheckbox-${id}"></label>
-                </div>
-                <!-- クイック送信 -->
-                <div>
-                  <input class="form-check-input is-quick check-quick ms-2" type="checkbox" id="quickCheckbox-${id}" value="option" ${isQuick ? "checked" : ""}>
-                  <label class="form-check-label" for="quickCheckbox-${id}"></label>
-                </div>
-                <!-- クリアボタン -->
-                <button class="clearBtn btn-customs btn btn-sm d-flex align-items-center py-0 px-1" data-target="textarea-${id}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
-                  </svg>
-                  <div class="ps-1">クリア</div>
-                </button>
-                <button data-target="template-form-${id}" class="delete-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 px-1" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"></path>
-                  </svg>
-                  <div class="ps-1">削除</div>
-                </button>
-              </div>
-            </div>
-            <div class="">
-              <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${id + 1}" aria-label="定型文${id + 1}" id="textarea-${id}" rows="1">${templateText}</textarea>
-            </div>
-          </div>
-          <hr class="m-2">
-        </div>`;
+        return addTemplate(id, uuid, hashtagText, isQuick, templateText);
       }).join("");
-    targetTab(document.querySelector('#tabItem'));
+    targetPreview(document.querySelector('#tabItem'));
   }
+  messageOutput(dateTime(), `${value}が追加されました`);
 });
 
+function addTemplate(id, uuid, hashtagText, isQuick, templateText) {
+  const template = `
+  <div id="template-form-${uuid}-${id}">
+    <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
+      <div class="d-flex justify-content-between mb-1">
+        <!-- ハッシュタグ -->
+        <div class="collapse w-100" id="hashtag-${uuid}-${id}">
+          <div class="input-group rounded-top ">
+            <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+            <input id="input-${uuid}-${id}" type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ" aria-label="ハッシュタグ" aria-describedby="basic-addon1" value="${hashtagText}"  maxlength="20">
+          </div>
+        </div>
+        <div class="d-flex justify-content-end w-100 mb-1">
+          <!-- ハッシュタグ表示 -->
+          <div>
+            <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox-${uuid}-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${uuid}-${id}" aria-expanded="false" aria-controls="hashtag-${id}" ${hashtagText ? "checked" : ""}>
+            <label class="form-check-label" for="hashCheckbox-${uuid}-${id}"></label>
+          </div>
+          <!-- クイック送信 -->
+          <div>
+            <input class="form-check-input is-quick check-quick ms-2" type="checkbox" id="quickCheckbox-${uuid}-${id}" value="option" ${isQuick ? "checked" : ""}>
+            <label class="form-check-label" for="quickCheckbox-${uuid}-${id}"></label>
+          </div>
+          <!-- クリアボタン -->
+          <button class="clearBtn btn-customs btn btn-sm d-flex align-items-center py-0 px-1" data-target="textarea-${uuid}-${id}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
+            </svg>
+            <div class="ps-1">クリア</div>
+          </button>
+          <button data-target="template-form-${uuid}-${id}" class="delete-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 px-1" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"></path>
+            </svg>
+            <div class="ps-1">削除</div>
+          </button>
+        </div>
+      </div>
+      <div class="">
+        <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${id + 1}" aria-label="定型文${id + 1}" id="textarea-${uuid}-${id}" rows="1">${templateText}</textarea>
+      </div>
+    </div>
+    <hr class="m-2">
+  </div>
+  `;
+  return template;
+}
+// 変更
 renameSetBtn.addEventListener('click', () => {
-  const tabItem = document.querySelector('#tabItem');
+  const { tabItem } = getTabInfo();
   let activeTab = tabItem.querySelector('.nav-link.active') || tabItem.querySelector('.nav-item .nav-link');
   if (activeTab) {
     activeTab.classList.add("active");
@@ -333,9 +385,6 @@ renameSetBtn.addEventListener('click', () => {
   const inputNameForm = document.querySelector("#add-set-name");
   const inputRenameForm = document.querySelector("#re-set-name");
   if (inputNameForm || inputRenameForm) return;
-  // if (inputNameForm) {
-  //   inputNameForm.parentElement.parentElement.remove();
-  // }
   const currentName = activeTab.textContent.trim();
   activeTab.innerHTML = `
     <input 
@@ -369,19 +418,17 @@ renameSetBtn.addEventListener('click', () => {
 
 // 複製
 copySetBtn.addEventListener('click', () => {
-  const activeTab = document.querySelector('#tabItem .nav-link.active');
-  const copyId = activeTab.getAttribute('data-bs-target');
-  const copyContent = document.querySelector(copyId);
+  const { activeContent: copyContent } = getTabInfo();
   if (!copyContent) return;
-  console.log('copyContent', copyContent)
-  const tabItem = document.getElementById("tabItem");
+  console.log('copyContent', copyContent);
+  const { tabItem, activeTab } = getTabInfo();
   const value = activeTab.textContent;
   console.log(value);
   const uuid = generateShortUUID();
   tabItem.innerHTML += `
     <li class="nav-item" role="presentation">
       <button type="button" class="nav-link rounded-0 p-2" id=" v-pills-${uuid}-tab" data-bs-toggle="pill"
-        data-bs-target="#v-pills-${uuid}" role="tab" aria-controls="v-pills-${uuid}"
+        data-bs-target="#v-pills-${tabItem.children.length}-${uuid}" role="tab" aria-controls="v-pills-${tabItem.children.length}-${uuid}"
         aria-selected="false">${value}
       </button>
     </li>
@@ -406,15 +453,14 @@ copySetBtn.addEventListener('click', () => {
     // DOMに追加
     addTabPane.appendChild(newPane);
     // デバッグ用ログ
-    console.log("新しいタブの内容が追加されました:", newPane);
-    targetTab(document.querySelector('#tabItem'));
+    targetPreview(document.querySelector('#tabItem'));
+    messageOutput(dateTime(), `${value}が複製されました`);
   }
 });
 
 // 削除
 deleteSetBtn.addEventListener('click', () => {
-  const tabItem = document.querySelector('#tabItem');
-  const activeTab = tabItem.querySelector('.nav-link.active');
+  const { tabItem, activeTab } = getTabInfo();
   const modalBody = document.querySelector('#exampleModal .modal-body');
   if (tabItem.children.length > 1) {
     modalBody.innerHTML = `
@@ -438,15 +484,12 @@ deleteSetBtn.addEventListener('click', () => {
   }
   //セット削除
   document.getElementById('set-delete').addEventListener('click', () => {
-    // アクティブなタブを削除
-    activeTab.parentElement.remove();
-
     // 対応するタブコンテンツを削除
-    const deleteId = activeTab.getAttribute('data-bs-target');
-    const deleteContent = document.querySelector(deleteId);
+    const { activeContent: deleteContent } = getTabInfo();
     if (deleteContent) {
       deleteContent.remove();
     }
+    activeTab.parentElement.remove();
 
     // 残ったタブのうち最初のタブをアクティブ化
     const remainingTabs = tabItem.querySelectorAll('.nav-link');
@@ -460,26 +503,72 @@ deleteSetBtn.addEventListener('click', () => {
         targetContent.classList.add('show', 'active');
       }
     }
-
     // モーダルのリセット（オプション）
     modalBody.innerHTML = '';
+    const { tabItem: resetTabs } = getTabInfo();
+    Array.from(resetTabs.children).forEach((tab, index) => {
+      const navLink = tab.querySelector(".nav-link");
+      const tabId = navLink.getAttribute('data-bs-target');
+      const uuid = tabId.slice(-13);
+      const targetId = `v-pills-${index}-${uuid}`;
+      const tabContent = document.querySelector(tabId);
+      // 更新
+      navLink.setAttribute('id', `#${targetId}-tab`);
+      navLink.setAttribute('data-bs-target', `#${targetId}`);
+      navLink.setAttribute('aria-controls', `#${targetId}`);
+      tabContent.setAttribute('id', targetId);
+      tabContent.setAttribute('aria-labelledby', targetId);
+    });
+    targetPreview(tabItem);
+    messageOutput(dateTime(), `${activeTab.textContent}削除されました`);
   });
 });
 
+// 保存
+saveSetBtn.addEventListener('click', () => {
+  saveAction();
+});
+
+// インデックスをリセットする処理（下が0になるよう逆順で設定）
+function resetIndices(tabId) {
+  const templateForms = document.querySelector(".template-forms");
+  const children = Array.from(templateForms.children);
+
+  // インデックスをリセットする際に順番を保持しつつ更新
+  children.reverse().forEach((child, reverseIndex) => {
+    const newIndex = reverseIndex; // 下から0になるようインデックス設定
+    child.id = `template-form-${tabId}-${newIndex}`;
+    const textarea = child.querySelector('textarea');
+    const hashtagCollapse = child.querySelector('.collapse');
+    const clearBtn = child.querySelector('.clearBtn');
+    const deleteBtn = child.querySelector('.delete-template-btn');
+    textarea.setAttribute('placeholder', `定型文${newIndex + 1}`);
+    textarea.setAttribute('aria-label', `定型文${newIndex + 1}`);
+    hashtagCollapse.id = `hashtag-${tabId}-${newIndex}`;
+    clearBtn.setAttribute('data-target', `textarea-${tabId}-${newIndex}`);
+    deleteBtn.setAttribute('data-target', `template-form-${tabId}-${newIndex}`);
+  });
+}
 
 
 // 定型文をストレージに保存
 function saveAction() {
   const templateSets = {};
   const tabItem = document.querySelectorAll('#tabItem .nav-link');
-  console.log(tabItem);
+  console.log("tabItem", tabItem);
   tabItem.forEach((navLink, index) => {
-    const saveTargetId = navLink.getAttribute('data-bs-target').slice(1);
-    const saveTargetContent = document.getElementById(saveTargetId);
+    console.log("navLink", navLink);
+    const tabName = navLink.textContent.trim();
+    console.log("tabName", tabName);
+    const saveTargetId = navLink.getAttribute('data-bs-target');
+    console.log("saveTargetId", saveTargetId);
+    const uuid = saveTargetId.slice(-13);
+    console.log("saveTargetId", uuid);
+    const saveTargetContent = document.querySelector(saveTargetId);
     console.log("saveTargetContent", saveTargetContent);
     const templateForms = saveTargetContent.querySelector('.template-forms');
     const children = Array.from(templateForms.children);
-    // インデックスをリセットする際に順番を保持しつつ更新
+
     let templates = {};
     children.forEach((child, index) => {
       const hashtagText = child.querySelector('.hashtag-text')?.value || '';
@@ -491,16 +580,15 @@ function saveAction() {
         templateText: templateText,
       }
     });
-    // console.log("templates", templates);
-    const twitchUserIdElement = saveTargetContent.querySelector("#twitch-id");
-    const twitchUserId = twitchUserIdElement ? twitchUserIdElement.value : null; // 値が取得できない場合は null を代入
-    // console.log("twitchUserId", twitchUserId);
+    const twitchUserIdElement = saveTargetContent.querySelector(`#twitch-id-${uuid}`);
+    const twitchUserId = twitchUserIdElement ? twitchUserIdElement.value : null;
     const createDate = saveTargetContent.querySelector('.createDate')?.textContent || dateTime();
     const updateDate = saveTargetContent.querySelector('.updateDate')?.textContent || dateTime();
     const createNum = parseInt(saveTargetContent.querySelector('.createNum')?.textContent || '0', 10);
     const useNum = parseInt(saveTargetContent.querySelector('.useNum')?.textContent || '0', 10);
     const twitchId = {
       twitchUserId: twitchUserId,
+      tabName: tabName,
       createDate: createDate,
       updateDate: updateDate,
       createNum: createNum,
@@ -517,164 +605,173 @@ function saveAction() {
   });
 }
 
-saveSetBtn.addEventListener('click', () => {
-  saveAction();
-});
+function loading() {
+  chrome.storage.local.get(['isEnabled', 'templateSets'], (data) => {
+    const storageInfo = data.templateSets;
+    if (storageInfo && typeof storageInfo === "object") {
+      const { tabItem, tabContents } = getTabInfo();
+      tabItem.innerHTML = "";
+      tabContents.innerHTML = "";
+      Object.entries(storageInfo).forEach(([key, value], index) => {
+        // console.log(`info ${index}: key = ${key}, value =`, value);
+        const uuid = key.slice(-13);
+        tabItem.innerHTML += `
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link rounded-0 p-2" id="${key}-tab" data-bs-toggle="pill"
+              data-bs-target="${key}" role="tab" aria-controls="${key}"
+              aria-selected="false">${value.tabName}
+            </button>
+          </li>
+        `;
 
-function targetTab(tabItem) {//プレビューに反映
-  const activeTab = tabItem.querySelector('.nav-link.active');
-  const targetId = activeTab.getAttribute('data-bs-target');
-  const viewContent = document.querySelector(targetId);
-  if (!viewContent) return;
-  const templateForms = viewContent.querySelector('.template-forms');
-  const children = Array.from(templateForms.children);
-  const text = document.querySelector('#text');
-  text.innerHTML = "";
-  children.forEach((child, index) => {
-    const hashtagText = child.querySelector('.hashtag-text')?.value || '';
-    const isQuick = child.querySelector('.is-quick')?.checked || false;
-    const templateText = child.querySelector('.template-text')?.value || '';
-    console.log("hashtagText", hashtagText);
-    console.log("templateText", templateText);
-    let viewText = hashtagText ? "#" + hashtagText : templateText;
-    console.log("viewText", viewText);
-    text.innerHTML += `
-      <button 
-        type="button" 
-        class="btn btn-custom my-auto px-2 py-3 template-btn" 
-        data-text="${templateText}" 
-        style="${isQuick ? "color: orange;" : ""}">
-        ${viewText}
-      </button>
-    `;
+        addTabContent(uuid);
+        const { noActiveTab, tabContents, noActiveContent, } = getTabInfo();
+        noActiveTab.classList.add('active');
+        tabContents.children[index].classList.remove('active', 'show');
+        noActiveContent.classList.add('active', 'show');
+        const twitchId = tabContents.querySelector(`twitch-id-${uuid}`);
+        const templateForms = tabContents.children[index].querySelector(".template-forms");
+        templateForms.innerHTML = Object.keys(value.templates)
+          .reverse()
+          .map((id) => {
+            const { hashtagText, isQuick, templateText } = value.templates[id];
+            return addTemplate(id, uuid, hashtagText, isQuick, templateText);
+          })
+          .join("");
+      });
+      targetPreview(tabItem);
+    } else {
+      console.log("templateSets is not a valid Object.");
+    }
   });
 }
+
 
 // DOMの読み込み完了を監視し，完了後に実行
 document.addEventListener('DOMContentLoaded', function () {
   // saveAction();
+  loading();
   const manifestData = chrome.runtime.getManifest();
   document.getElementById('name').textContent = `${manifestData.name}`;
 
   const tabItem = document.querySelector('#tabItem');
-  targetTab(tabItem);
+  targetPreview(tabItem);
   tabItem.addEventListener('click', () => {
-    targetTab(tabItem);//プレビュー
+    targetPreview(tabItem);//プレビュー
   });
 
-  // ツールチップ（ハッシュタグをONにする）
-  const tooltipHashtag = document.querySelectorAll('[data-bs-toggle="tooltipHashtag"]');
-  tooltipHashtag.forEach(function (e) {
-    new bootstrap.Tooltip(e);
-  });
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltipQuick"]');
-  tooltipTriggerList.forEach(function (e) {
-    new bootstrap.Tooltip(e);
+  document.addEventListener("mouseover", (event) => {
+    const tooltipHashtag = event.target.closest('[data-bs-toggle="tooltipHashtag"]');
+    const tooltipTriggerList =event.target.closest('[data-bs-toggle="tooltipQuick"]');
+
+    if (tooltipHashtag) {
+      const hashtagInstance = new bootstrap.Tooltip(tooltipHashtag);
+      tooltipHashtag.addEventListener("mouseleave", () => {
+        hashtagInstance.dispose();
+      }, { once: true });
+    }
+    if (tooltipTriggerList) {
+      const triggerListInstance = new bootstrap.Tooltip(tooltipTriggerList);
+      tooltipTriggerList.addEventListener("mouseleave", () => {
+        triggerListInstance.dispose();
+      }, { once: true });
+    }
   });
 
-  const activeTab = tabItem.querySelector('.nav-link.active');
-  const targetId = activeTab.getAttribute('data-bs-target');
-  const tabId = targetId.slice(9);
-  const tabContent = document.querySelector("#v-pills-tabContent");
-  const activeContent = tabContent.querySelector(targetId);
-  const addTemplateBtn = activeContent.querySelector(".add-template-btn");
-  console.log("targetId1", targetId);
-  console.log("addTemplateBtn", addTemplateBtn);
-  addTemplateBtn.addEventListener("click", () => {
-    const templateForms = activeContent.querySelector(".template-forms");
-    console.log("templateForms", templateForms);
-    // const filteredChildren = Array.from(templateForms.children).filter(child => child.tagName !== 'HR');
-    const filteredChildren = templateForms.children;
-    const newTemplateHTML = `
-    <div id="template-form-${tabId}-${filteredChildren.length}">
-      <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
-        <div class="d-flex justify-content-between mb-1">
-          <!-- ハッシュタグ -->
-          <div class="collapse w-100" id="hashtag-${tabId}-${filteredChildren.length}">
-            <div class="input-group rounded-top ">
-              <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
-              <input type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ"
-                aria-label="ハッシュタグ" aria-describedby="basic-addon1">
+
+
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("add-template-btn")) {
+      const { targetId, activeContent: targetContent } = getTabInfo();
+      const tabId = targetId.slice(-13);
+      const templateForms = targetContent.querySelector(".template-forms");
+      const filteredChildren = templateForms.children;
+      const newTemplateHTML = `
+          <div id="template-form-${tabId}-${filteredChildren.length}">
+            <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
+              <div class="d-flex justify-content-between mb-1">
+                <!-- ハッシュタグ -->
+                <div class="collapse w-100" id="hashtag-${tabId}-${filteredChildren.length}">
+                  <div class="input-group rounded-top ">
+                    <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
+                    <input type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ"
+                      aria-label="ハッシュタグ" aria-describedby="basic-addon1">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-100 mb-1">
+                  <!-- ハッシュタグ表示 -->
+                  <div>
+                    <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
+                      data-bs-toggle="collapse" data-bs-target="#hashtag-${tabId}-${filteredChildren.length}" aria-expanded="false"
+                      aria-controls="hashtag-${tabId}-${filteredChildren.length}">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <!-- クイック送信 -->
+                  <div>
+                    <input class="form-check-input is-quick check-quick ms-2 " type="checkbox" id="quickCheckbox"
+                      value="option">
+                    <label class="form-check-label" for="hashCheckbox"></label>
+                  </div>
+                  <!-- クリアボタン -->
+                  <button class="clearBtn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
+                    data-target="textarea-${tabId}-${filteredChildren.length}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-x-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                    <div class="ps-1">クリア</div>
+                  </button>
+                  <button data-target="template-form-${tabId}-${filteredChildren.length}"
+                    class="delete-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
+                    type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                      class="bi bi-trash3" viewBox="0 0 16 16">
+                      <path
+                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                    <div class="ps-1">削除</div>
+                  </button>
+                </div>
+              </div>
+              <div class="">
+                <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${filteredChildren.length + 1}" aria-label="定型文${filteredChildren.length + 1}" id="textarea-${tabId}-${filteredChildren.length + 1}"
+                  rows="1"></textarea>
+              </div>
             </div>
+            <hr class="m-2">
           </div>
-          <div class="d-flex justify-content-end w-100 mb-1">
-            <!-- ハッシュタグ表示 -->
-            <div>
-              <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox" value="option1"
-                data-bs-toggle="collapse" data-bs-target="#hashtag-${tabId}-${filteredChildren.length}" aria-expanded="false"
-                aria-controls="hashtag-${tabId}-${filteredChildren.length}">
-              <label class="form-check-label" for="hashCheckbox"></label>
-            </div>
-            <!-- クイック送信 -->
-            <div>
-              <input class="form-check-input is-quick check-quick ms-2 " type="checkbox" id="quickCheckbox"
-                value="option">
-              <label class="form-check-label" for="hashCheckbox"></label>
-            </div>
-            <!-- クリアボタン -->
-            <button class="clearBtn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
-              data-target="textarea-${tabId}-${filteredChildren.length}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                class="bi bi-x-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                <path
-                  d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-              </svg>
-              <div class="ps-1">クリア</div>
-            </button>
-            <button data-target="template-form-${tabId}-${filteredChildren.length}"
-              class="delete-template-btn btn-customs btn btn-sm d-flex align-items-center py-0 px-1"
-              type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                class="bi bi-trash3" viewBox="0 0 16 16">
-                <path
-                  d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-              </svg>
-              <div class="ps-1">削除</div>
-            </button>
-          </div>
-        </div>
-        <div class="">
-          <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${filteredChildren.length + 1}" aria-label="定型文${filteredChildren.length + 1}" id="textarea-${tabId}-${filteredChildren.length + 1}"
-            rows="1"></textarea>
-        </div>
-      </div>
-      <hr class="m-2">
-    </div>
-    `;
-    templateForms.insertAdjacentHTML("afterbegin", newTemplateHTML);
+        `;
+      templateForms.insertAdjacentHTML("afterbegin", newTemplateHTML);
+    }
+
+    // 削除ボタンがクリックされた場合
+    if (event.target.closest(".delete-template-btn")) {
+      const button = event.target.closest(".delete-template-btn");
+      const targetId = button.getAttribute("data-target");
+      const tabId = targetId.slice(-13);
+      const templateForm = document.getElementById(targetId);
+      if (templateForm) {
+        console.log("targetId", targetId);
+        templateForm.remove();
+        resetTemplateIndices(tabId); // 削除後にインデックスをリセット
+      }
+    }
+
+    // クリアボタンがクリックされた場合
+    if (event.target.closest(".clearBtn")) {
+      const button = event.target.closest(".clearBtn");
+      const targetId = button.getAttribute("data-target");
+      const textarea = document.getElementById(targetId);
+      if (textarea) {
+        textarea.value = "";
+      }
+    }
+    const tabItem = document.querySelector('#tabItem');
+    targetPreview(tabItem);
   });
 
-  // ボタンにイベントリスナーを設定
-  function initButtonHandlers() {
-    // 全体にイベント委譲
-    document.addEventListener("click", (event) => {
-      // 削除ボタンがクリックされた場合
-      if (event.target.closest(".delete-template-btn")) {
-        const button = event.target.closest(".delete-template-btn");
-        const targetId = button.getAttribute("data-target");
-        const tabId = targetId.slice(9);
-        const templateForm = document.getElementById(targetId);
-        if (templateForm) {
-          console.log("targetId", targetId);
-          templateForm.remove();
-          resetTemplateIndices(tabId); // 削除後にインデックスをリセット
-        }
-      }
-
-      // クリアボタンがクリックされた場合
-      if (event.target.closest(".clearBtn")) {
-        const button = event.target.closest(".clearBtn");
-        const targetId = button.getAttribute("data-target");
-        const textarea = document.getElementById(targetId);
-        if (textarea) {
-          textarea.value = "";
-        }
-      }
-    });
-  }
-  // 初期化処理
-  initButtonHandlers();
 
   // インデックスをリセットする処理（下が0になるよう逆順で設定）
   function resetTemplateIndices(tabId) {
