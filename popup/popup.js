@@ -106,10 +106,16 @@ const defaultTemplate = {
 };
 
 // コンテンツの追加
-function addTabContent(uuid) {
+function addTabContent(uuid, value = {}) {
+
   console.log("uuid", uuid);
 
   const { tabItem, tabContents: addTabPane } = getTabInfo();
+  const twitchUserId = value.twitchUserId || '';
+  const createDate = value.createDate || dateTime();
+  const updateDate = value.updateDate || dateTime();
+  // if (value) {
+  // }
   addTabPane.innerHTML += `          
   <div class="tab-pane fade show active " id="v-pills-${tabItem.children.length - 1}-${uuid}" role="tabpanel"
           aria-labelledby="v-pills-${uuid}-tab" tabindex="0">
@@ -117,7 +123,7 @@ function addTabContent(uuid) {
       <div class="input-group rounded-top  w-100">
         <span class="input-group-text py-0 px-1 rounded-0 bg-dark text-bg-dark">www.twitch.tv/</span>
         <input type="text" class="form-control p-0 ps-1 rounded-0" placeholder="twitch-id" aria-label="twitch"
-          aria-describedby="basic-addon1" id="twitch-id-${uuid}">
+          aria-describedby="basic-addon1" id="twitch-id-${uuid}" value="${twitchUserId}">
       </div>
       <button class="btn-customs btn btn-sm d-flex align-items-center py-0 px-1 ms-1" data-bs-toggle="collapse"
         data-bs-target="#collapseInfo-${uuid}" aria-expanded="false" aria-controls="collapseInfo">
@@ -129,12 +135,12 @@ function addTabContent(uuid) {
         <div class="ps-1 text-nowrap">詳細</div>
       </button>
     </div>
-    <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo-${uuid}}">
+    <div class="collapse collapse-horizontal w-100 h-100 pb-2" id="collapseInfo-${uuid}">
       <div class="ms-2 d-flex">作成日：
-        <div class="createDate">${dateTime()}</div>
+        <div class="createDate">${createDate}</div>
       </div>
       <div class="ms-2 d-flex">更新日：
-        <div class="updateDate">${dateTime()}</div>
+        <div class="updateDate">${updateDate}</div>
       </div>
       <div class="ms-2 d-flex">作成数：
         <div class="createNum">0</div>
@@ -225,6 +231,7 @@ function handleInputFinish(input, uuid) {
       newActiveTab.innerHTML = `${value}`;
     }
     addTabContent(uuid);
+    messageOutput(dateTime(), `${value}が追加されました`);
   } else {
     const lastTab = tabItem.children[tabItem.children.length - 1];
     if (!newActiveTab || newActiveTab === lastTab.querySelector('.nav-link')) {
@@ -237,6 +244,7 @@ function handleInputFinish(input, uuid) {
       const firstTargetId = firstTab.getAttribute('data-bs-target');
       const firstTargetContent = document.querySelector(firstTargetId);
       firstTargetContent.classList.add('show', 'active');
+
     }
   }
 }
@@ -333,7 +341,7 @@ function addTemplate(id, uuid, hashtagText, isQuick, templateText) {
     <div class="mx-2 p-1 template-select" tabindex="0" id="focusableDiv">
       <div class="d-flex justify-content-between mb-1">
         <!-- ハッシュタグ -->
-        <div class="collapse w-100" id="hashtag-${uuid}-${id}">
+        <div class="collapse w-100 ${hashtagText ? 'show' : ''}" id="hashtag-${uuid}-${id}">
           <div class="input-group rounded-top ">
             <span class="input-group-text py-0 px-1 rounded-0" id="basic-addon1">#</span>
             <input id="input-${uuid}-${id}" type="text" class="form-control p-0 ps-1 rounded-0 hashtag-text" placeholder="ハッシュタグ" aria-label="ハッシュタグ" aria-describedby="basic-addon1" value="${hashtagText}"  maxlength="20">
@@ -342,7 +350,7 @@ function addTemplate(id, uuid, hashtagText, isQuick, templateText) {
         <div class="d-flex justify-content-end w-100 mb-1">
           <!-- ハッシュタグ表示 -->
           <div>
-            <input class="form-check-input check-hash" type="checkbox" id="hashCheckbox-${uuid}-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${uuid}-${id}" aria-expanded="false" aria-controls="hashtag-${id}" ${hashtagText ? "checked" : ""}>
+            <input class="form-check-input check-hash ${hashtagText ? '' : 'collapsed'}" type="checkbox" id="hashCheckbox-${uuid}-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${uuid}-${id}" aria-expanded="false" aria-controls="hashtag-${id}"  ${hashtagText ? "checked" : ""}>
             <label class="form-check-label" for="hashCheckbox-${uuid}-${id}"></label>
           </div>
           <!-- クイック送信 -->
@@ -399,16 +407,16 @@ renameSetBtn.addEventListener('click', () => {
   const renameInput = document.querySelector('#re-set-name');
   renameInput.focus();
   renameInput.value = currentName;
-  const inputEvent = new InputEvent("input", { bubbles: true });
-  renameInput.dispatchEvent(inputEvent);
+  // const inputEvent = new InputEvent("input", { bubbles: true });
+  // renameInput.dispatchEvent(inputEvent);
 
   renameInput.addEventListener("blur", () => {
     const newName = renameInput.value.trim() || currentName; // 空欄の場合は元の名前に戻す
     activeTab.innerHTML = newName;
-    console.log(`タブの名前が変更されました: ${newName}`);
+    console.log(`タブ名が変更されました: ${newName}`);
+    messageOutput(dateTime(), `${newName}に変更されました`);
   });
   renameInput.addEventListener("keydown", (e) => {
-
     if (e.key === "Enter") {
       console.log("ok");
       renameInput.blur();
@@ -418,7 +426,7 @@ renameSetBtn.addEventListener('click', () => {
 
 // 複製
 copySetBtn.addEventListener('click', () => {
-  const { activeContent: copyContent } = getTabInfo();
+  const { tabContents, activeContent: copyContent } = getTabInfo();
   if (!copyContent) return;
   console.log('copyContent', copyContent);
   const { tabItem, activeTab } = getTabInfo();
@@ -445,13 +453,32 @@ copySetBtn.addEventListener('click', () => {
     const addTabPane = document.querySelector("#v-pills-tabContent");
     // 元の要素をクローンして操作
     const newPane = copyContent.cloneNode(true); // 子要素も含めてクローン
-    const newId = `v-pills-${uuid}`; // 一意のIDを生成
-    // 新しいタブのIDや属性を設定
-    newPane.id = newId;
-    newPane.setAttribute('aria-labelledby', `${newId}-tab`);
-    newPane.classList.add('show', 'active'); // アクティブ状態を設定
-    // DOMに追加
-    addTabPane.appendChild(newPane);
+    console.log("newPane", newPane);
+
+    const oldUuid = copyContent.id.slice(-13); // 旧UUIDを抽出
+    const oldHTML = newPane.outerHTML;
+
+    // 正規表現でUUIDパターン全体を置き換え
+    const updatedHTML = oldHTML.replace(
+      /\b[a-fA-F0-9]{8}-[a-fA-F0-9]{4}\b/g, // UUIDパターンの正規表現
+      (match) => {
+        return match === oldUuid ? uuid : match; // 該当する旧UUIDのみ新しいUUIDに置き換え
+      }
+    );
+    // console.log("updatedHTML", updatedHTML);
+
+    // 更新したHTMLをnewPaneに適用
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = updatedHTML.trim();
+    const updatedPane = tempContainer.firstChild;
+
+    // 必要なクラスや状態を更新
+    console.log("tabContents", tabContents.children.length)
+    updatedPane.id = `v-pills-${tabContents.children.length}-${uuid}`;
+    updatedPane.classList.add('show', 'active');
+
+    addTabPane.appendChild(updatedPane);
+
     // デバッグ用ログ
     targetPreview(document.querySelector('#tabItem'));
     messageOutput(dateTime(), `${value}が複製されました`);
@@ -520,7 +547,7 @@ deleteSetBtn.addEventListener('click', () => {
       tabContent.setAttribute('aria-labelledby', targetId);
     });
     targetPreview(tabItem);
-    messageOutput(dateTime(), `${activeTab.textContent}削除されました`);
+    messageOutput(dateTime(), `${activeTab.textContent}が削除されました`);
   });
 });
 
@@ -613,7 +640,7 @@ function loading() {
       tabItem.innerHTML = "";
       tabContents.innerHTML = "";
       Object.entries(storageInfo).forEach(([key, value], index) => {
-        // console.log(`info ${index}: key = ${key}, value =`, value);
+        console.log(`info ${index}: key = ${key}, value =`, value);
         const uuid = key.slice(-13);
         tabItem.innerHTML += `
           <li class="nav-item" role="presentation">
@@ -623,13 +650,12 @@ function loading() {
             </button>
           </li>
         `;
-
-        addTabContent(uuid);
+        addTabContent(uuid, value);
         const { noActiveTab, tabContents, noActiveContent, } = getTabInfo();
         noActiveTab.classList.add('active');
         tabContents.children[index].classList.remove('active', 'show');
         noActiveContent.classList.add('active', 'show');
-        const twitchId = tabContents.querySelector(`twitch-id-${uuid}`);
+        // const twitchId = tabContents.querySelector(`#twitch-id-${uuid}`);
         const templateForms = tabContents.children[index].querySelector(".template-forms");
         templateForms.innerHTML = Object.keys(value.templates)
           .reverse()
@@ -657,12 +683,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const tabItem = document.querySelector('#tabItem');
   targetPreview(tabItem);
   tabItem.addEventListener('click', () => {
-    targetPreview(tabItem);//プレビュー
+    targetPreview(tabItem);
   });
 
   document.addEventListener("mouseover", (event) => {
     const tooltipHashtag = event.target.closest('[data-bs-toggle="tooltipHashtag"]');
-    const tooltipTriggerList =event.target.closest('[data-bs-toggle="tooltipQuick"]');
+    const tooltipTriggerList = event.target.closest('[data-bs-toggle="tooltipQuick"]');
 
     if (tooltipHashtag) {
       const hashtagInstance = new bootstrap.Tooltip(tooltipHashtag);
@@ -849,6 +875,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // GitHubリンクのクリックイベントを設定
   const githubLink = document.getElementById('github-link');
   if (githubLink) clickURL(githubLink);
+
+  const issueLink = document.getElementById('issue-link');
+  if (issueLink) clickURL(issueLink);
 
 });
 
