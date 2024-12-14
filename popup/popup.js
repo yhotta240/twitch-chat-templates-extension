@@ -107,15 +107,12 @@ const defaultTemplate = {
 
 // コンテンツの追加
 function addTabContent(uuid, value = {}) {
-
-  console.log("uuid", uuid);
-
   const { tabItem, tabContents: addTabPane } = getTabInfo();
   const twitchUserId = value.twitchUserId || '';
   const createDate = value.createDate || dateTime();
   const updateDate = value.updateDate || dateTime();
-  // if (value) {
-  // }
+  const createNum = value.createNum || "0";
+  const useNum = value.useNum || "0";
   addTabPane.innerHTML += `          
   <div class="tab-pane fade show active " id="v-pills-${tabItem.children.length - 1}-${uuid}" role="tabpanel"
           aria-labelledby="v-pills-${uuid}-tab" tabindex="0">
@@ -143,10 +140,10 @@ function addTabContent(uuid, value = {}) {
         <div class="updateDate">${updateDate}</div>
       </div>
       <div class="ms-2 d-flex">作成数：
-        <div class="createNum">0</div>
+        <div class="createNum">${createNum}</div>
       </div>
       <div class="ms-2 d-flex">使用回数：
-        <div class="useNum">0</div>
+        <div class="useNum">${useNum}</div>
       </div>
     </div>
 
@@ -194,6 +191,8 @@ function addTabContent(uuid, value = {}) {
     </div>
   </div>
   `;
+
+
 }
 
 function targetPreview(tabItem) {//プレビューに反映
@@ -205,11 +204,14 @@ function targetPreview(tabItem) {//プレビューに反映
   const children = Array.from(templateForms.children);
   const text = document.querySelector('#text');
   text.innerHTML = "";
+  let count = null;
   children.forEach((child, index) => {
     const hashtagText = child.querySelector('.hashtag-text')?.value || '';
     const isQuick = child.querySelector('.is-quick')?.checked || false;
     const templateText = child.querySelector('.template-text')?.value || '';
     let viewText = hashtagText ? "#" + hashtagText : templateText;
+    count = index;
+
     text.innerHTML += `
       <button 
         type="button" 
@@ -220,6 +222,7 @@ function targetPreview(tabItem) {//プレビューに反映
       </button>
     `;
   });
+  viewContent.querySelector('.createNum').textContent = count === null ? 0 : count + 1;
 }
 
 function handleInputFinish(input, uuid) {
@@ -375,7 +378,7 @@ function addTemplate(id, uuid, hashtagText, isQuick, templateText) {
         </div>
       </div>
       <div class="">
-        <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${id + 1}" aria-label="定型文${id + 1}" id="textarea-${uuid}-${id}" rows="1">${templateText}</textarea>
+        <textarea class="form-control p-1 rounded-0 template-text" placeholder="定型文${parseInt(id) + 1}" aria-label="定型文${parseInt(id) + 1}" id="textarea-${uuid}-${id}" rows="1">${templateText}</textarea>
       </div>
     </div>
     <hr class="m-2">
@@ -554,6 +557,7 @@ deleteSetBtn.addEventListener('click', () => {
 // 保存
 saveSetBtn.addEventListener('click', () => {
   saveAction();
+  messageOutput(dateTime(), '定型文プリセットの内容がすべて保存されました');
 });
 
 // インデックスをリセットする処理（下が0になるよう逆順で設定）
@@ -628,7 +632,7 @@ function saveAction() {
   console.log("templateSets", templateSets);
   // ストレージに保存
   chrome.storage.local.set({ templateSets: templateSets }, () => {
-    messageOutput(dateTime(), '定型文プリセットの内容がすべて保存されました');
+    
   });
 }
 
