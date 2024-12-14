@@ -39,8 +39,8 @@
         aria-controls="description" aria-selected="false">概要</a>
     </li>
     <li class="nav-item " role="presentation">
-      <a class="nav-link p-1 link-light" id="tutorial-tab" data-bs-toggle="tab" href="#tutorial" role="tab"
-        aria-controls="tutorial" aria-selected="false">チュートリアル</a>
+      <a class="nav-link p-1 link-light" id="document-tab" data-bs-toggle="tab" href="#document" role="tab"
+        aria-controls="document" aria-selected="false">ドキュメント</a>
     </li>
     <li class="nav-item" role="presentation">
       <a class="nav-link p-1 link-light" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info"
@@ -103,7 +103,7 @@
             <path
               d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
           </svg>
-          標準
+          雛形
         </button>
         <button class=" justify-content-between btn btn-sm btn-edit text-nowrap" type="button" id="rename-set-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square"
@@ -331,24 +331,52 @@
     </div>
 
     <!-- 概要 -->
-    <div class="tab-pane fade mt-2 mx-2" id="description" role="tabpanel" style="margin-bottom: 200px;"
+    <div class="tab-pane fade m-3" id="description" role="tabpanel" style="margin-bottom: 200px;"
       aria-labelledby="description-tab">
-      <div>
+      <div >
         <h5>概要</h5>
-        <p class="my-1 fw-bold">説明:</p>
         <p>
-          このChrome拡張機能を使えば，○○できます。
+          このChrome拡張機能は，Twitchのチャットに定型文（テンプレートメッセージ）を簡単に入力できます。事前に登録したテンプレートメッセージをワンクリックで呼び出せるため，繰り返し使うメッセージをスムーズに送信できます。配信者やリスナーとのやり取りが効率化され，より快適なチャット体験を実現します。
         </p>
-        <p class="my-1 fw-bold">拡張機能の主な特徴:</p>
-        <p class="mt-1">機能の説明を書く</p>
-        <p class="my-1 fw-bold">注意点:</p>
-        <p class="mt-1">注意点を書く</p>
+        <p class=" fw-bold mb-3">拡張機能の主な特徴:</p>
+        <ol>
+          <li class="mb-3">
+            テンプレートメッセージの登録と管理
+            <ul>
+              <li>定型文を自由に登録可能。</li>
+              <li>登録したメッセージを編集・削除・複製</li>
+            </ul>
+          </li>
+          <li class="mb-3">
+            簡単な挿入機能
+            <ul>
+              <li>ボタンひとつでチャット欄に登録した定型文を挿入。</li>
+            </ul>
+          </li>
+          <li class="mb-3">
+            ハッシュタグ機能で定型文を整理
+            <ul>
+              <li>長い定型文もハッシュタグで簡略化してプレビュー表示し，必要なメッセージを一目で確認</li>
+            </ul>
+          </li>
+          <!-- <li>
+            テンプレートの保存と共有(次回に)
+            <ul>
+              <li>テンプレートメッセージを別ファイルに保存し，バックアップや他デバイスへの移行が可能。</li>
+            </ul>
+          </li> -->
+        </ol>
+        <p class="my-3 fw-bold">注意点:</p>
+        <ul>
+          <li class="mb-3">現在，Twitchのスタンプを定型文として登録することはできません。今後のアップデートで追加する予定です。</li>
+          <li class="mb-3">本拡張機能はTwitchのチャット規約を尊重して使用してください。不適切なメッセージやスパム行為はお控えください。</li>
+        </ul>
       </div>
     </div>
 
-    <!-- チュートリアル -->
-    <div class="tab-pane fade mt-2 mx-2" id="tutorial" role="tabpanel" style="margin-bottom: 200px;"
-      aria-labelledby="tutorial-tab">
+    <!-- ドキュメント -->
+    <div class="tab-pane fade mt-2 mx-2" id="document" role="document" style="margin-bottom: 200px;"
+      aria-labelledby="document-tab">
 
       <p class="mb-1 fw-bold">
         Sampleを有効にする
@@ -473,12 +501,32 @@
     <!-- その他 -->
     <div class="tab-pane fade mt-2 mx-2" id="others" role="tabpanel" style="margin-bottom: 200px;"
       aria-labelledby="others-tab">
-      <div class="m-2 fw-bold">
+      <div class="m-2 fw-bold mt-3">
         問題報告フォーム
       </div>
-      <a id="issue-link" class="m-2 text-bg-dark"
-        href="https://forms.gle/qkaaa2E49GQ5QKMT8">https://forms.gle/qkaaa2E49GQ5QKMT8</a>
-
+      <ul class="list-group list-group-flush mb-3">
+        <li class="list-group-item ">
+          <a id="issue-link" class=" text-bg-dark"
+            href="https://forms.gle/qkaaa2E49GQ5QKMT8">https://forms.gle/qkaaa2E49GQ5QKMT8</a>
+        </li>
+      </ul>
+      <div class="m-2 fw-bold">
+        バージョン報告
+      </div>
+      <div class="mb-3">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div>1.0.2(最新)</div>
+            その他のタブを追加
+          </li>
+        </ul>
+      </div>
+      <div class="m-2 fw-bold">
+        その他のおすすめツール
+      </div>
+      <div class="m-2">
+        <iframe width="100%" src="" frameborder="0"></iframe>
+      </div>
     </div>
   </div>
 
