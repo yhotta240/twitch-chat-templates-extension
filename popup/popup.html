@@ -279,15 +279,15 @@
                     <div class="d-flex justify-content-end w-100 mb-1">
                       <!-- ハッシュタグ表示 -->
                       <div>
-                        <input class="form-check-input check-hash hashtag" type="checkbox" id="hashCheckbox" value="option1"
-                          data-bs-toggle="collapse" data-bs-target="#hashtag-9a4a1c8c-1a7b-tab-0" aria-expanded="false"
-                          aria-controls="hashtag-9a4a1c8c-1a7b-tab-0">
+                        <input class="form-check-input check-hash hashtag" type="checkbox" id="hashCheckbox"
+                          value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-9a4a1c8c-1a7b-tab-0"
+                          aria-expanded="false" aria-controls="hashtag-9a4a1c8c-1a7b-tab-0">
                         <label class="form-check-label" for="hashCheckbox"></label>
                       </div>
                       <!-- クイック送信 -->
                       <div>
-                        <input class="form-check-input is-quick check-quick quick ms-2 " type="checkbox" id="quickCheckbox"
-                          value="option">
+                        <input class="form-check-input is-quick check-quick quick ms-2 " type="checkbox"
+                          id="quickCheckbox" value="option">
                         <label class="form-check-label" for="hashCheckbox"></label>
                       </div>
                       <!-- クリアボタン -->
@@ -359,7 +359,7 @@
       <div class="m-3 py-2">
         <h5>概要</h5>
         <p>
-          このChrome拡張機能は，Twitchのチャットに定型文（テンプレートメッセージ）を簡単に入力できます。事前に登録したテンプレートメッセージをワンクリックで呼び出せるため，繰り返し使うメッセージをスムーズに送信できます。配信者やリスナーとのやり取りが効率化され，より快適なチャット体験を実現します。
+          このChrome拡張機能は，定型文（テンプレートメッセージ）をTwitchのチャット欄に簡単に入力できます。事前に登録したテンプレートメッセージをワンクリックで呼び出せるため，繰り返し使うメッセージをスムーズに送信できます。配信者やリスナーとのやり取りが効率化され，より快適なチャット体験を実現します。
         </p>
         <p class=" fw-bold mb-3">拡張機能の主な特徴:</p>
         <ol>
@@ -374,6 +374,12 @@
             簡単な挿入機能
             <ul>
               <li>ボタンひとつで登録した定型文をチャット欄に挿入</li>
+            </ul>
+          </li>
+          <li class="mb-3">
+            クイック送信
+            <ul>
+              <li>定型チャット内の定型文をクリックしてメッセージを即時送信</li>
             </ul>
           </li>
           <li class="mb-3">
@@ -449,6 +455,10 @@
                   <div class="fw-bold m-2">クイック送信機能</div>
                   定型チャット内の定型文をクリックすると，Twitchのチャット欄に入力されることなく，即時にメッセージが送信されます。<br>
                   クイック送信に設定された定型文は，定型チャット内でオレンジ色のテキストとして表示されます。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">保存</div>
+                  保存ボタンをクリックして定型プリセットのすべての内容をローカルストレージに保存します。
                 </li>
               </ol>
               <p class="mb-1 fw-bold fs-5">
