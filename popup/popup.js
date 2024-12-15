@@ -313,8 +313,7 @@ addTemplateSetBtn.addEventListener('click', () => {
     </li>
   `;
   const { activeTab, activeContent: tabPane } = getTabInfo();
-  // const {  } = getTabInfo();
-  console.log("tabPane", tabPane);
+  // console.log("tabPane", tabPane);
   if (activeTab && tabPane) {
     tabPane.classList.remove('show', 'active');
     activeTab.classList.remove('active');
@@ -327,10 +326,10 @@ addTemplateSetBtn.addEventListener('click', () => {
 
     addTabContent(uuid);
     const targetId = newTab.getAttribute('data-bs-target');
-    console.log("targetId", targetId);
+    // console.log("targetId", targetId);
     const templateContent = document.querySelector(targetId);
     const templateForms = templateContent.querySelector(".template-forms");
-    console.log("templateForms", templateForms);
+    // console.log("templateForms", templateForms);
     templateForms.innerHTML =
       Object.keys(defaultTemplate).reverse().map((id, index) => {
         const { hashtagText, isQuick, templateText } = defaultTemplate[id];
@@ -419,12 +418,11 @@ renameSetBtn.addEventListener('click', () => {
   renameInput.addEventListener("blur", () => {
     const newName = renameInput.value.trim() || currentName; // 空欄の場合は元の名前に戻す
     activeTab.innerHTML = newName;
-    console.log(`タブ名が変更されました: ${newName}`);
+    // console.log(`タブ名が変更されました: ${newName}`);
     messageOutput(dateTime(), `${newName}に変更されました`);
   });
   renameInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      console.log("ok");
       renameInput.blur();
     }
   });
@@ -434,10 +432,8 @@ renameSetBtn.addEventListener('click', () => {
 copySetBtn.addEventListener('click', () => {
   const { tabContents, activeContent: copyContent } = getTabInfo();
   if (!copyContent) return;
-  console.log('copyContent', copyContent);
   const { tabItem, activeTab } = getTabInfo();
   const value = activeTab.textContent;
-  console.log(value);
   const uuid = generateShortUUID();
   tabItem.innerHTML += `
     <li class="nav-item" role="presentation">
@@ -459,7 +455,7 @@ copySetBtn.addEventListener('click', () => {
     const addTabPane = document.querySelector("#v-pills-tabContent");
     // 元の要素をクローンして操作
     const newPane = copyContent.cloneNode(true); // 子要素も含めてクローン
-    console.log("newPane", newPane);
+    // console.log("newPane", newPane);
 
     const oldUuid = copyContent.id.slice(-13); // 旧UUIDを抽出
     const oldHTML = newPane.outerHTML;
@@ -479,7 +475,7 @@ copySetBtn.addEventListener('click', () => {
     const updatedPane = tempContainer.firstChild;
 
     // 必要なクラスや状態を更新
-    console.log("tabContents", tabContents.children.length)
+    // console.log("tabContents", tabContents.children.length)
     updatedPane.id = `v-pills-${tabContents.children.length}-${uuid}`;
     updatedPane.classList.add('show', 'active');
 
@@ -589,17 +585,11 @@ function resetIndices(tabId) {
 function saveAction() {
   const templateSets = {};
   const tabItem = document.querySelectorAll('#tabItem .nav-link');
-  console.log("tabItem", tabItem);
-  tabItem.forEach((navLink, index) => {
-    console.log("navLink", navLink);
+  tabItem.forEach((navLink) => {
     const tabName = navLink.textContent.trim();
-    console.log("tabName", tabName);
     const saveTargetId = navLink.getAttribute('data-bs-target');
-    console.log("saveTargetId", saveTargetId);
     const uuid = saveTargetId.slice(-13);
-    console.log("saveTargetId", uuid);
     const saveTargetContent = document.querySelector(saveTargetId);
-    console.log("saveTargetContent", saveTargetContent);
     const templateForms = saveTargetContent.querySelector('.template-forms');
     const children = Array.from(templateForms.children);
 
@@ -629,10 +619,9 @@ function saveAction() {
       useNum: useNum,
       templates: templates,
     }
-    // console.log("twitchId", twitchId);
     templateSets[saveTargetId] = twitchId;
   });
-  console.log("templateSets", templateSets);
+  // console.log("templateSets", templateSets);
   // ストレージに保存
   chrome.storage.local.set({ templateSets: templateSets }, () => {
 
@@ -647,7 +636,7 @@ function loading() {
       tabItem.innerHTML = "";
       tabContents.innerHTML = "";
       Object.entries(storageInfo).forEach(([key, value], index) => {
-        console.log(`info ${index}: key = ${key}, value =`, value);
+        // console.log(`info ${index}: key = ${key}, value =`, value);
         const uuid = key.slice(-13);
         tabItem.innerHTML += `
           <li class="nav-item" role="presentation">
@@ -673,20 +662,10 @@ function loading() {
           .join("");
       });
       targetPreview(tabItem);
-    } else {
-      console.log("templateSets is not a valid Object.");
     }
   });
 }
 
-
-const selectSetName1 = document.querySelector('#select-set-name');
-if (selectSetName1) {
-  selectSetName1.addEventListener("change", (event) => {
-    const selectedText = event.target.value;
-    console.log("選択されたテキスト:", selectedText);
-  });
-}
 
 // DOMの読み込み完了を監視し，完了後に実行
 document.addEventListener('DOMContentLoaded', function () {
@@ -716,7 +695,6 @@ document.addEventListener('DOMContentLoaded', function () {
     text.classList.toggle('text-nowrap', !isExpand);
     text.classList.toggle('overflow-x-scroll', !isExpand);
   }));
-
 
   document.addEventListener("mouseover", (event) => {
     const tooltipHashtag = event.target.closest('[data-bs-toggle="tooltipHashtag"]');
@@ -877,8 +855,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+
+  // ドキュメントタブ:
+  const twitchLink = document.getElementById('twitch_link');
+  if (twitchLink) clickURL(twitchLink);
+
   // 情報タブ: 
-  // ストアリンクのクリックイベントを設定
   const storeLink = document.getElementById('store_link');
   if (storeLink) clickURL(storeLink);
 
