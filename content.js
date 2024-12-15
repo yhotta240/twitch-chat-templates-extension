@@ -218,7 +218,7 @@ function addElement() {
             d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
         </svg>
       </button>
-      <div id="text" class="btn-group  fs-4 d-flex align-content-start justify-content-between text-nowrap overflow-x-scroll z-0"
+      <div id="text" class="btn-group px-2 fs-4 d-flex align-content-start justify-content-between text-nowrap overflow-x-scroll z-0"
         style="scroll-behavior: smooth;"  role="group">
   
       </div>
