@@ -202,6 +202,9 @@ function targetPreview(tabItem) {//プレビューに反映
   if (!viewContent) return;
   const templateForms = viewContent.querySelector('.template-forms');
   const children = Array.from(templateForms.children);
+  const selectSetName = document.querySelector('#select-set-name');
+  selectSetName.children[0].textContent = activeTab.textContent;
+
   const text = document.querySelector('#text');
   text.innerHTML = "";
   let count = null;
@@ -632,7 +635,7 @@ function saveAction() {
   console.log("templateSets", templateSets);
   // ストレージに保存
   chrome.storage.local.set({ templateSets: templateSets }, () => {
-    
+
   });
 }
 
@@ -677,6 +680,14 @@ function loading() {
 }
 
 
+const selectSetName1 = document.querySelector('#select-set-name');
+if (selectSetName1) {
+  selectSetName1.addEventListener("change", (event) => {
+    const selectedText = event.target.value;
+    console.log("選択されたテキスト:", selectedText);
+  });
+}
+
 // DOMの読み込み完了を監視し，完了後に実行
 document.addEventListener('DOMContentLoaded', function () {
   // saveAction();
@@ -689,6 +700,23 @@ document.addEventListener('DOMContentLoaded', function () {
   tabItem.addEventListener('click', () => {
     targetPreview(tabItem);
   });
+
+  const [textExpand, textCollapse, textRight, textLeft, text, templateGroupSets] =
+    ['#text-expand', '#text-collapse', '#right-arrow', '#left-arrow', '#text', '#twitch-template-chat']
+      .map(sel => document.querySelector(sel));
+
+  [textExpand, textCollapse].forEach(button => button.addEventListener('click', () => {
+    const isExpand = button === textExpand;
+    templateGroupSets.style.height = isExpand ? "200px" : "";
+    [textRight, textLeft].forEach(el => el.style.display = isExpand ? "none" : "");
+    textExpand.classList.toggle("d-none", isExpand);
+    textCollapse.classList.toggle("d-none", !isExpand);
+    text.classList.toggle('flex-wrap', isExpand);
+    text.classList.toggle('overflow-y-scroll', isExpand);
+    text.classList.toggle('text-nowrap', !isExpand);
+    text.classList.toggle('overflow-x-scroll', !isExpand);
+  }));
+
 
   document.addEventListener("mouseover", (event) => {
     const tooltipHashtag = event.target.closest('[data-bs-toggle="tooltipHashtag"]');
