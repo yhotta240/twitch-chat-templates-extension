@@ -64,7 +64,7 @@ const defaultTemplate = {
     templateText: "初見です！よろしくお願いします！"
   },
   [1]: {
-    hashtagText: "きたあ",
+    hashtagText: "",
     isQuick: false,
     templateText: "きたああああああああああああ"
   },
@@ -75,33 +75,55 @@ const defaultTemplate = {
   },
   [3]: {
     hashtagText: "",
-    isQuick: false,
-    templateText: "今日使ってるデバイスや設定を教えてください！"
+    isQuick: true,
+    templateText: "今使ってるデバイスの設定を教えてください！"
   },
   [4]: {
     hashtagText: "",
     isQuick: false,
-    templateText: "次に挑戦するゲームは決まってますか？"
+    templateText: "次にするゲームは決まってますか？"
   },
   [5]: {
     hashtagText: "",
     isQuick: false,
-    templateText: "ナイスプレイ！すごかったです！"
+    templateText: "新作の○○（ゲーム名）についてどう思いますか？"
   },
   [6]: {
-    hashtagText: "応援",
+    hashtagText: "",
     isQuick: false,
-    templateText: "頑張れ！応援してます！"
+    templateText: "頑張れ！"
   },
   [7]: {
     hashtagText: "",
     isQuick: false,
-    templateText: "今の場面、めっちゃ笑いましたｗ"
+    templateText: "めっちゃ笑いましたｗ"
   },
   [8]: {
-    hashtagText: "お疲れ様です",
+    hashtagText: "NICE",
     isQuick: false,
-    templateText: "配信お疲れ様です！いつも楽しい時間をありがとうございます！"
+    templateText: `
+━━━┏━┓━┏┓┏━━┓┏━━━┓┏━━━┓━━━
+━━━┃┃┗┓┃┃┗┫┣┛┃┏━┓┃┃┏━━┛━━━
+━━━┃┏┓┗┛┃━┃┃━┃┃━┗┛┃┗━━┓━━━
+━━━┃┃┗┓┃┃━┃┃━┃┃━┏┓┃┏━━┛━━━
+━━━┃┃━┃┃┃┏┫┣┓┃┗━┛┃┃┗━━┓━━━
+━━━┗┛━┗━┛┗━━┛┗━━━┛┗━━━┛━━━`
+  },
+  [9]: {
+    hashtagText: "GG",
+    isQuick: false,
+    templateText: `
+░░░░░██████╗░░██████╗░░░░░
+░░░░██╔════╝░██╔════╝░░░░░
+░░░░██║░░██╗░██║░░██╗░░░░░
+░░░░██║░░╚██╗██║░░╚██╗░░░░
+░░░░╚██████╔╝╚██████╔╝░░░░
+░░░░░╚═════╝░░╚═════╝░░░░░`
+  },
+  [10]: {
+    hashtagText: "",
+    isQuick: true,
+    templateText: "配信お疲れ様でした"
   }
 };
 
@@ -149,7 +171,7 @@ function addTabContent(uuid, value = {}) {
 
     <div class="ms-2 mb-1">
       <div class="form-check">
-        <input class="form-check-input check-hash" type="checkbox" value="" id="allHashCheck-${uuid}"
+        <input class="form-check-input check-hash all-hash" type="checkbox" value="" id="allHashCheck-${uuid}"
           data-bs-toggle="collapse" data-bs-target="#collapseHashtag" aria-expanded="false"
           aria-controls="collapseHashtag">
         <label class="form-check-label " for="allHashCheck-${uuid}">
@@ -163,7 +185,7 @@ function addTabContent(uuid, value = {}) {
         </svg>
       </div>
       <div class="form-check">
-        <input class="form-check-input check-quick" type="checkbox" value="" id="allQuickCheck-${uuid}">
+        <input class="form-check-input check-quick all-quick" type="checkbox" value="" id="allQuickCheck-${uuid}">
         <label class="form-check-label " for="allQuickCheck-${uuid}">
           クイック送信をすべてONにする
         </label>
@@ -355,12 +377,12 @@ function addTemplate(id, uuid, hashtagText, isQuick, templateText) {
         <div class="d-flex justify-content-end w-100 mb-1">
           <!-- ハッシュタグ表示 -->
           <div>
-            <input class="form-check-input check-hash ${hashtagText ? '' : 'collapsed'}" type="checkbox" id="hashCheckbox-${uuid}-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${uuid}-${id}" aria-expanded="false" aria-controls="hashtag-${id}"  ${hashtagText ? "checked" : ""}>
+            <input class="form-check-input check-hash hashtag ${hashtagText ? '' : 'collapsed'}" type="checkbox" id="hashCheckbox-${uuid}-${id}" value="option1" data-bs-toggle="collapse" data-bs-target="#hashtag-${uuid}-${id}" aria-expanded="false" aria-controls="hashtag-${id}"  ${hashtagText ? "checked" : ""}>
             <label class="form-check-label" for="hashCheckbox-${uuid}-${id}"></label>
           </div>
           <!-- クイック送信 -->
           <div>
-            <input class="form-check-input is-quick check-quick ms-2" type="checkbox" id="quickCheckbox-${uuid}-${id}" value="option" ${isQuick ? "checked" : ""}>
+            <input class="form-check-input is-quick check-quick quick ms-2" type="checkbox" id="quickCheckbox-${uuid}-${id}" value="option" ${isQuick ? "checked" : ""}>
             <label class="form-check-label" for="quickCheckbox-${uuid}-${id}"></label>
           </div>
           <!-- クリアボタン -->
@@ -714,9 +736,63 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-
-
   document.addEventListener("click", (event) => {
+    const allHashCheck = event.target.closest(".form-check-input.check-hash.all-hash");
+    const allQuick = event.target.closest(".form-check-input.check-quick.all-quick");
+
+    if (allHashCheck || allQuick) {
+      const { tabUuid, activeContent } = getTabInfo();
+      const templateForms = activeContent.querySelector(".template-forms");
+      if (!templateForms) return;
+      const isChecked = allHashCheck ? allHashCheck.checked : allQuick.checked;
+      const type = allHashCheck ? "hash" : "quick";
+      Array.from(templateForms.children).forEach((template, index) => {
+        const reverseIndex = templateForms.children.length - 1 - index;
+        if (type === "hash") {
+          const hashtag = template.querySelector(`#hashtag-${tabUuid}-${reverseIndex}`);
+          const hashCheckbox = template.querySelector(`#hashCheckbox-${tabUuid}-${reverseIndex}`);
+          if (hashtag && hashCheckbox) {
+            if (isChecked) {
+              hashtag.classList.add("show");
+              hashCheckbox.classList.remove("collapsed");
+              hashCheckbox.setAttribute("aria-expanded", "true");
+            } else {
+              hashtag.classList.remove("show");
+              hashCheckbox.classList.add("collapsed");
+              hashCheckbox.setAttribute("aria-expanded", "false");
+            }
+            hashCheckbox.checked = isChecked;
+          }
+        } else if (type === "quick") {
+          const quickCheckbox = template.querySelector(`#quickCheckbox-${tabUuid}-${reverseIndex}`);
+          if (quickCheckbox) {
+            quickCheckbox.checked = isChecked;
+          }
+        }
+      });
+    }
+
+    const hashCheck = event.target.closest(".form-check-input.check-hash.hashtag");
+    const quickCheck = event.target.closest(".form-check-input.check-quick.quick");
+
+    if (hashCheck || quickCheck) {
+      const { activeContent } = getTabInfo();
+      const templateForms = activeContent.querySelector(".template-forms");
+      if (!templateForms) return;
+
+      // チェック状態を更新
+      if (hashCheck && !hashCheck.checked) {
+        const allHash = activeContent.querySelector(".form-check-input.check-hash.all-hash");
+        if (allHash) allHash.checked = false;
+      }
+
+      if (quickCheck && !quickCheck.checked) {
+        const allQuick = activeContent.querySelector(".form-check-input.check-quick.all-quick");
+        if (allQuick) allQuick.checked = false;
+      }
+    }
+
+
     if (event.target.classList.contains("add-template-btn")) {
       const { targetId, activeContent: targetContent } = getTabInfo();
       const tabId = targetId.slice(-13);
@@ -895,30 +971,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-// popup.html内のリンクを新しいタブで開けるように設定する関数
-// linkにはgetElementByIdで取得した要素またはURL文字列を渡す
 function clickURL(link) {
-  const url = link.href ? link.href : link; // linkが要素ならhref属性からURLを取得，URL文字列ならそのまま使用
-
-  // linkがHTML要素の場合のみクリックイベントを設定
+  const url = link.href ? link.href : link;
   if (link instanceof HTMLElement) {
     link.addEventListener('click', (event) => {
-      event.preventDefault(); // デフォルトのリンク遷移を防止
-      chrome.tabs.create({ url }); // 新しいタブでURLを開く
+      event.preventDefault();
+      chrome.tabs.create({ url });
     });
   }
 }
 
-
-// メッセージを指定した日時とともに出力する関数
 function messageOutput(datetime, message) {
   messageDiv.innerHTML += '<p class="m-0">' + datetime + ' ' + message + '</p>'; // <p> タグで囲んでメッセージを新しい行に追加
 }
-// メッセージをクリアする処理
+
 document.getElementById('messageClearButton').addEventListener('click', () => {
   messageDiv.innerHTML = '<p class="m-0">' + '' + '</p>'; // メッセージ表示エリアを空にする
 });
-
 
 // 現在の時間を取得する
 // "年-月-日 時:分" の形式で返す（例：2024-11-02 10:52）
