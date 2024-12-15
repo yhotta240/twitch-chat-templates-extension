@@ -1,11 +1,15 @@
 let isEnabled = false; // ツールの有効状態を示すフラグ（初期値は無効）
 
-// Sampleツールの有効/無効を処理する関数
+// ツールの有効/無効を処理する関数
 const handleSampleTool = (isEnabled) => {
   if (isEnabled) { // ツールが有効になったときの処理
-
+    observer.observe(document, {
+      childList: true,
+      attributes: true,
+      subtree: true
+    });
   } else { // ツールが無効になったときの処理
-
+    observer.disconnect();
   }
 };
 
@@ -36,25 +40,7 @@ chrome.storage.onChanged.addListener((changes) => {
   handleSampleTool(isEnabled);
 });
 
-
-// チャット欄の監視を設定する関数
-function observeChatBar() {
-  const chatOpen = document.querySelector('[data-a-target="right-column-chat-bar"]'); // チャットが開いているときの要素
-
-  if (chatOpen) {
-    // console.log('チャットが開いています');
-    // チャットが開いたときの処理
-  } else {
-    // console.log('チャットが閉じています');
-    // チャットが閉じたときの処理
-  }
-
-}
-
-
-// MutationObserverのインスタンスを作成し、observeChatBar関数をコールバックとして渡す
 const observer = new MutationObserver(() => {
-  observeChatBar();
   addElement();
 
   const leftArrow = document.getElementById("left-arrow");
@@ -85,49 +71,39 @@ const observer = new MutationObserver(() => {
   let click = 0;
   // console.log("click", click);
   if (leftArrow && rightArrow) {
-    // イベントリスナーがすでに設定されているかどうかを確認
     if (!leftArrow.hasAttribute('data-listener')) {
       leftArrow.addEventListener("click", function () {
-        if (click > 0 && click <= children.length) {
+        if (children.length > 0 && click > 0) { // 範囲チェック
           click -= 1;
-        }
-        console.log("click", click)
-        let totalWidth = 0;
-        // console.log("left-arrow", children)
-        // console.log("left-arrow", children[click])
-        totalWidth += (children[click].offsetWidth) * 2;  // 子要素の幅を加算
-        // console.log("left-arrow", children[i].innerHTML)
 
-        textContainer.scrollLeft -= totalWidth;
-        console.log(textContainer.scrollLeft)
+          let totalWidth = children[click] ? children[click].offsetWidth : 0; // 安全に幅を取得
+          textContainer.scrollLeft -= totalWidth;
+          // console.log("Scroll Left:", textContainer.scrollLeft, "Click Index:", click);
+        }
       });
       leftArrow.setAttribute('data-listener', 'true');
     }
 
     if (!rightArrow.hasAttribute('data-listener')) {
       rightArrow.addEventListener("click", function () {
-        // 最初の子要素の幅を取得
-        let totalWidth = 0;
-        // console.log("right-arrow", children)
-        // console.log("right-arrow", children[click])
-        totalWidth += (children[click].offsetWidth);  // 子要素の幅を加算
-        // console.log("right-arrow", children[i].innerHTML)
+        if (children.length > 0 && click < children.length - 1) { // 範囲チェック
+          let totalWidth = children[click] ? children[click].offsetWidth : 0; // 安全に幅を取得
+          textContainer.scrollLeft += totalWidth;
 
-        textContainer.scrollLeft += totalWidth;  // 各要素の幅に基づいてスクロール
-        if (click >= 0 && click < children.length) {
           click += 1;
+          // console.log("Scroll Right:", textContainer.scrollLeft, "Click Index:", click);
         }
-        console.log("click", click)
       });
       rightArrow.setAttribute('data-listener', 'true');
     }
   }
+
   if (templateBtns.length > 0 && !templateBtns[0].hasAttribute('data-listener')) {
     templateBtns.forEach(function (button) {
       button.addEventListener('click', function () {
         const inputText = button.getAttribute('data-text');
         const chatInput = document.querySelector('[data-a-target="chat-input"]');
-        console.log("text", inputText);
+        // console.log("text", inputText);
         if (chatInput) {
           // フォーカスを設定
           chatInput.focus();
@@ -147,18 +123,6 @@ const observer = new MutationObserver(() => {
     });
     templateBtns[0].setAttribute('data-listener', 'true');
   }
-});
-
-observer.observe(document, {
-  childList: true,
-  attributes: true,
-  subtree: true
-});
-
-// 初期化
-window.addEventListener('load', () => {
-  observeChatBar();
-  addElement();
 });
 
 let offset = 0; // 初期位置の設定
@@ -280,7 +244,7 @@ function addElement() {
 
   const currentURL = window.location.href; // ブラウザの現在のURLを取得
   const twitchURLId = new URL(currentURL).pathname.split('/')[1];
-  console.log("twitchURLId: ", twitchURLId);
+  // console.log("twitchURLId: ", twitchURLId);
 
   const selectSetName = document.querySelector('#select-set-name');
   const textBtnGroup = document.querySelector('#text');
@@ -288,7 +252,7 @@ function addElement() {
 
   chrome.storage.local.get(['isEnabled', 'templateSets'], (data) => {
     if (!data.isEnabled || !data.templateSets || typeof data.templateSets !== "object") {
-      console.log("templateSets is not a valid Object or feature is disabled.");
+      // console.log("templateSets is not a valid Object or feature is disabled.");
       return;
     }
     if (!data.isEnabled) return;
@@ -296,7 +260,7 @@ function addElement() {
     let templatesText;
     let isTemplatesText = false;
     Object.entries(data.templateSets).forEach(([key, value], index) => {
-      console.log(`info ${index}: key = ${key}, value =`, value);
+      // console.log(`info ${index}: key = ${key}, value =`, value);
       const { twitchUserId, tabName, templates } = value;
 
       // <option> 要素を作成して追加
