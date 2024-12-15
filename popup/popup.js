@@ -718,6 +718,41 @@ document.addEventListener('DOMContentLoaded', function () {
     text.classList.toggle('overflow-x-scroll', !isExpand);
   }));
 
+  const leftArrow = document.getElementById("left-arrow");
+  const rightArrow = document.getElementById("right-arrow");
+  const textContainer = document.getElementById("text");
+  const children = textContainer ? textContainer.children : null;
+
+  let click = 0;
+  // console.log("click", click);
+  if (leftArrow && rightArrow) {
+    if (!leftArrow.hasAttribute('data-listener')) {
+      leftArrow.addEventListener("click", function () {
+        if (children.length > 0 && click > 0) { // 範囲チェック
+          click -= 1;
+
+          let totalWidth = children[click] ? children[click].offsetWidth : 0; // 安全に幅を取得
+          textContainer.scrollLeft -= totalWidth;
+          // console.log("Scroll Left:", textContainer.scrollLeft, "Click Index:", click);
+        }
+      });
+      leftArrow.setAttribute('data-listener', 'true');
+    }
+
+    if (!rightArrow.hasAttribute('data-listener')) {
+      rightArrow.addEventListener("click", function () {
+        if (children.length > 0 && click < children.length - 1) { // 範囲チェック
+          let totalWidth = children[click] ? children[click].offsetWidth : 0; // 安全に幅を取得
+          textContainer.scrollLeft += totalWidth;
+
+          click += 1;
+          // console.log("Scroll Right:", textContainer.scrollLeft, "Click Index:", click);
+        }
+      });
+      rightArrow.setAttribute('data-listener', 'true');
+    }
+  }
+
   document.addEventListener("mouseover", (event) => {
     const tooltipHashtag = event.target.closest('[data-bs-toggle="tooltipHashtag"]');
     const tooltipTriggerList = event.target.closest('[data-bs-toggle="tooltipQuick"]');
