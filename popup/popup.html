@@ -27,13 +27,13 @@
   <!-- メニュータブ -->
   <ul class="nav nav-underline mb-2 mx-1 bg-dark rounded-top " id="myTab" role="tablist">
     <li class="nav-item " role="presentation ">
-      <a class="nav-link active p-1 link-light " id="template-tab" data-bs-toggle="tab" href="#template" role="tab"
+      <a class="nav-link active p-1 ms-3 link-light " id="template-tab" data-bs-toggle="tab" href="#template" role="tab"
         aria-controls="template " aria-selected="true">定型文</a>
     </li>
-    <li class="nav-item " role="presentation ">
+    <!-- <li class="nav-item " role="presentation ">
       <a class="nav-link p-1 link-light " id="settings-tab" data-bs-toggle="tab" href="#settings" role="tab"
         aria-controls="settings " aria-selected="true">設定</a>
-    </li>
+    </li> -->
     <li class="nav-item" role="presentation">
       <a class="nav-link p-1 link-light" id="description-tab" data-bs-toggle="tab" href="#description" role="tab"
         aria-controls="description" aria-selected="false">概要</a>
@@ -58,31 +58,52 @@
       aria-labelledby="template-tab">
       <!-- プレビュー -->
       <div class="mb-3">
-        <strong class="mb-0 ps-2 pt-1">プレビュー</strong>
-        <div class=" my-2  w-100 d-flex justify-content-between preview-div" id="twitch-template-chat">
-          <button id="left-arrow" type="button" class="btn btn-custom  p-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-caret-left-fill m-1 mx-2" viewBox="0 0 16 16">
-              <path
-                d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
-            </svg>
-          </button>
-
-          <div id="text" class="btn-group  fs-4 d-flex justify-content-between text-nowrap overflow-x-scroll z-0"
-            style="scroll-behavior: smooth;" role="group">
+        <strong class="mb-0 ps-2 pt-1">プレビュー(定型チャット)
+        </strong>
+        <div class="my-2">
+          <div class="d-flex justify-content-between">
+            <select id="select-set-name" class="rounded-0 border-0 bg-dark text-light form-select form-select-lg w-50"
+              aria-label="select example">
+              <option value="0" selected></option>
+            </select>
+            <button id="text-expand" type="button" class="btn btn-custom  ">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-arrows-expand" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10" />
+              </svg>
+            </button>
+            <button id="text-collapse" type="button" class="d-none btn btn-custom  ">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-arrows-collapse" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8m7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0m-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0z" />
+              </svg>
+            </button>
           </div>
-
-          <button id="right-arrow" type="button" class="btn btn-custom  p-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-caret-right-fill m-1 mx-2" viewBox="0 0 16 16">
-              <path
-                d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-            </svg>
-          </button>
+          <div class=" d-flex  justify-content-between preview-div" id="twitch-template-chat">
+            <button id="left-arrow" type="button" class="btn btn-custom  p-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-caret-left-fill " viewBox="0 0 16 16">
+                <path
+                  d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+              </svg>
+            </button>
+            <div id="text" class="btn-group  fs-4 d-flex align-content-start justify-content-between text-nowrap overflow-x-scroll z-0"
+              style="scroll-behavior: smooth;" role="group">
+            </div>
+            <button id="right-arrow" type="button" class="btn btn-custom  p-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                <path
+                  d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <strong class="ps-2 ">定型文プリセット</strong>
+      <strong class="ps-2 ">定型プリセット</strong>
       <div class="btn-group my-2 border w-100" role="group" aria-label="Basic mixed styles example">
         <button class=" justify-content-between btn btn-primary btn-sm text-nowrap" type="button" id="add-set-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square"
@@ -154,7 +175,7 @@
       </div>
       <div class=" mx-0 ">
 
-        <!-- プリセットタブ -->
+        <!-- 定型プリセットタブ -->
         <ul class="nav nav-tabs " id="tabItem" role="tablist">
           <li class="nav-item " role="presentation">
             <button type="button" class="nav-link active rounded-0 p-2" id="v-pills-9a4a1c8c-1a7b-tab"
@@ -164,7 +185,7 @@
           </li>
         </ul>
 
-        <!-- プリセット詳細 -->
+        <!-- 定型プリセット詳細 -->
         <div class="tab-content p-0 template-div pb-4" id="v-pills-tabContent">
           <!-- 1番目 -->
           <div class="tab-pane fade show active " id="v-pills-0-9a4a1c8c-1a7b" role="tabpanel"
@@ -331,9 +352,9 @@
     </div>
 
     <!-- 概要 -->
-    <div class="tab-pane fade " id="description" role="tabpanel"
-      aria-labelledby="description-tab"style="margin-bottom: 200px;">
-      <div class="m-3" >
+    <div class="tab-pane fade bg-dark mx-1 " id="description" role="tabpanel" aria-labelledby="description-tab"
+      style="margin-bottom: 200px;">
+      <div class="m-3 py-2">
         <h5>概要</h5>
         <p>
           このChrome拡張機能は，Twitchのチャットに定型文（テンプレートメッセージ）を簡単に入力できます。事前に登録したテンプレートメッセージをワンクリックで呼び出せるため，繰り返し使うメッセージをスムーズに送信できます。配信者やリスナーとのやり取りが効率化され，より快適なチャット体験を実現します。
@@ -350,7 +371,7 @@
           <li class="mb-3">
             簡単な挿入機能
             <ul>
-              <li>ボタンひとつでチャット欄に登録した定型文を挿入</li>
+              <li>ボタンひとつで登録した定型文をチャット欄に挿入</li>
             </ul>
           </li>
           <li class="mb-3">
@@ -375,43 +396,104 @@
     </div>
 
     <!-- ドキュメント -->
-    <div class="tab-pane fade mt-2 mx-2" id="document" role="document" style="margin-bottom: 200px;"
+    <div class="tab-pane fade mt-4 mx-1 " id="document" role="document" style="margin-bottom: 200px;"
       aria-labelledby="document-tab">
+      <div class="accordion accordion-flush " id="accordionFlushExample">
+        <!-- チュートリアル -->
+        <div class="accordion-item ">
+          <h2 class="accordion-header ">
+            <button class="accordion-button collapsed bg-dark text-bg-dark " type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+              チュートリアル
+            </button>
+          </h2>
+          <div id="flush-collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body p-2 bg-dark text-bg-dark">
+              <p class="mb-2 fw-bold fs-5">
+                Twitch 定型チャット を有効にする
+              </p>
+              <ol class="my-2">
+                <li>
+                  <div class="fw-bold m-2">拡張機能のポップアップを開く</div>
+                </li>
+                <li>
+                  <div class="fw-bold m-2">「Twitch 定型チャットを ON にする」を有効にする</div>
+                  上部に表示される「Twitch 定型チャットを ON にする」の項目でトグルボタンをオンにしてください。
+                  ※無効にする場合は，同じ操作でオフに戻します。
+                </li>
+              </ol>
+              <p class="mb-2 fw-bold fs-5">
+                定型プリセットを登録する
+              </p>
+              <ol>
+                <li>
+                  <div class="fw-bold m-2">プリセットを作成する</div>
+                  追加ボタンをクリックし，セット名を決めてプリセットを作成します。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">コメント欄への表示</div>
+                  定型チャットは，ライブ配信中のコメント欄の上部に表示されます。<br>
+                  配信者のTwitch IDをあらかじめ登録しておくことで，該当するライブ配信中のページに優先的に表示されます。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">定型文の追加</div>
+                  「定型文を追加」ボタンをクリックし，定型文フォームに登録したい文章を入力してください。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">ハッシュタグ機能の活用</div>
+                  定型文が長い場合，ハッシュタグ（10文字以内）を使用すると，定型チャットに表示される文章を簡潔にできます。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">クイック送信機能</div>
+                  定型チャット内の定型文をクリックすると，Twitchのチャット欄に入力されることなく，即時にメッセージが送信されます。<br>
+                  クイック送信に設定された定型文は，定型チャット内でオレンジ色のテキストとして表示されます。
+                </li>
+              </ol>
+              <p class="mb-1 fw-bold fs-5">
+                使用方法
+              </p>
+              <ul>
+                <li>
+                  <div class="fw-bold m-2">ライブ配信ページへ移動する</div>
+                  <a href="https://www.twitch.tv/">Twitch</a>にアクセスし，現在ライブ配信中のページに移動します。
+                </li>
+                <li>
+                  <div class="fw-bold m-2">定型チャットを利用する</div>
+                  ライブ配信中のコメント欄の上部に定型チャットが表示されます。
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- ドキュメント -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed bg-dark text-bg-dark " type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+              定型セット
+            </button>
+          </h2>
+          <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body bg-dark text-bg-dark ">
 
-      <p class="mb-1 fw-bold">
-        Sampleを有効にする
-      </p>
-      <ul class="m-1">
-        <li>拡張機能のポップアップを開き，「Sampleを有効にする」のトグルボタンをクリック</li>
-        <li> </li>
-        <li></li>
-      </ul>
-      <div class="mb-3">無効にする場合も同じ操作を行ってください。</div>
-      <p class="mb-1 fw-bold">
-        設定
-      </p>
-      <ul>
-        <li>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed bg-dark text-bg-dark " type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseTwo">
+              定型チャット
+            </button>
+          </h2>
+          <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body bg-dark text-bg-dark ">
 
-        </li>
-        <li>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        </li>
-        <li>
-
-        </li>
-      </ul>
-      <p class="mb-1 fw-bold">
-        操作方法
-      </p>
-      <ul>
-        <li>
-
-        </li>
-        <li>
-
-        </li>
-      </ul>
     </div>
 
     <!-- 詳細情報 -->
