@@ -102,15 +102,13 @@ const observer = new MutationObserver(() => {
     templateBtns.forEach(function (button) {
       button.addEventListener('click', function () {
         const inputText = button.getAttribute('data-text');
+        const textStyle = getComputedStyle(button);
         const chatInput = document.querySelector('[data-a-target="chat-input"]');
-        // console.log("text", inputText);
-        if (chatInput) {
-          // フォーカスを設定
+        const sendButton = document.querySelector('button[data-a-target="chat-send-button"]');
+
+        if (chatInput && sendButton) {
+          // 入力欄にフォーカスを設定
           chatInput.focus();
-          // 入力イベントをトリガー
-          const inputEvent = new InputEvent("input", { bubbles: true });
-          chatInput.dispatchEvent(inputEvent);
-          // 貼り付け
           const clipboardData = new DataTransfer();
           clipboardData.setData("text/plain", inputText);
           const pasteEvent = new ClipboardEvent("paste", {
@@ -118,6 +116,13 @@ const observer = new MutationObserver(() => {
             clipboardData: clipboardData,
           });
           chatInput.dispatchEvent(pasteEvent);
+          // 少し遅延を入れて送信ボタンをクリック
+          setTimeout(() => {
+            if (textStyle.color === "rgb(255, 165, 0)") {
+              sendButton.click();
+              console.log(`メッセージ送信: ${inputText}`);
+            }
+          }, 75);
         }
       });
     });
