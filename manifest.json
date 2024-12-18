@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Twitch 定型チャット - Twitch Chat Templates",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Twitchでのチャットをもっと便利に！定型文を登録しておき，Twitchチャット欄に簡単入力。入力の手間を省き，快適なチャットをサポートします。",
   "icons": {
     "48": "icons/icon.png"
