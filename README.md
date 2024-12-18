@@ -1,4 +1,4 @@
-# Twitch Chat Templates Extension
+# Twitch 定型チャット - Twitch Chat Templates
 
 ## 概要
 
