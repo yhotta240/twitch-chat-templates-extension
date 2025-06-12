@@ -142,7 +142,7 @@ function moveText(direction) {
 function addElement() {
   const chat = document.getElementById("twitch-template-chat");
   if (chat) return;
-  const parentElement = document.querySelector('div.Layout-sc-1xcs6mc-0.kILIqT.chat-input');
+  const parentElement = document.querySelector('div.Layout-sc-1xcs6mc-0 .chat-input');
 
   if (parentElement) {
     const newDiv = document.createElement('div');
